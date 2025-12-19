@@ -1,12 +1,13 @@
-package agh.model;
+package agh.model.animal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import agh.model.MapDirection;
+import agh.model.Vector2d;
+import agh.model.WorldElement;
+
 import java.util.UUID;
 
 
-public class Animal {
+public class Animal implements WorldElement {
     private static final int BREED_MIN_ENERGY = 77;     // parametr
     private static final int ENERGY_USED_TO_BREED = 22;     // parametr
     private static final int ENERGY_AFTER_DAY = 5;       // parametr
@@ -39,10 +40,11 @@ public class Animal {
 
     public void breed() {
         energy -= BREED_MIN_ENERGY;
+        numberOfBreedings += 1;
     }
 
-    public void eat(int plantEnergy) {
-        energy += plantEnergy;
+    public void eat(int grassEnergy) {
+        energy += grassEnergy;
         // jezeli zakladamy ze mamy limit energii
         if (energy > 100) {
             energy = 100;
@@ -69,6 +71,7 @@ public class Animal {
         return direction;
     }
 
+    @Override
     public Vector2d getPosition() {
         return position;
     }

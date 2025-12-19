@@ -1,4 +1,6 @@
-package agh.model;
+package agh.model.animal;
+
+import agh.model.RandomNumber;
 
 import java.util.ArrayList;
 import java.util.List;
