@@ -83,12 +83,7 @@ public class Genotype {
         }
     }
 
-    private static double energyRatio(int energy1, int  energy2) {
-        int totalEnergy = energy1 + energy2;
-        return (double)totalEnergy / (double)genomLength;
-    }
-
     public List<Integer> getGenom() {
-        return this.genom;
+        return genom;
     }
 }

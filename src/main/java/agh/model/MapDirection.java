@@ -38,4 +38,15 @@ public enum MapDirection {
             case NORTHWEST -> new Vector2d(-1, 1);
         };
     }
+
+    public static MapDirection generateRandomDirection() {
+        MapDirection[] directions = MapDirection.values();
+        return directions[RandomNumber.getRandomNumberInRange(0, directions.length-1)];
+    }
+
+    public MapDirection rotation(int rotationNumber) {
+        int size = MapDirection.values().length;
+        int newIndex = (this.ordinal() + rotationNumber) % size;
+        return MapDirection.values()[newIndex];
+    }
 }
