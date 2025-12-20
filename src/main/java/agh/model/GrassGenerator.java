@@ -28,7 +28,7 @@ public class GrassGenerator {
         }
 
 
-        RandomPositionGenerator randomJunglePositions = new RandomPositionGenerator(jungleBoundary, inJungleNum);
+        RandomPositionGenerator randomJunglePositions = new RandomPositionGenerator(jungleBoundary, inJungleNum, true);
         for (Vector2d position : randomJunglePositions) {
             worldMap.placeGrass(new Grass(position));
         }
@@ -39,7 +39,7 @@ public class GrassGenerator {
         int jungleHeight = jungleBoundary.upperRight().getY() - jungleBoundary.lowerLeft().getY();
         int worldHeightWithoutJungle = worldMap.getHeight() - jungleHeight;
         Boundary mapWithoutJungleBoundaries = new Boundary(mapBoundary.lowerLeft(), new Vector2d(worldMap.getWidth(), worldHeightWithoutJungle));
-        RandomPositionGenerator randomNonJunglePositions = new RandomPositionGenerator(mapWithoutJungleBoundaries, notInJungleNum);
+        RandomPositionGenerator randomNonJunglePositions = new RandomPositionGenerator(mapWithoutJungleBoundaries, notInJungleNum, true);
         for (Vector2d position : randomNonJunglePositions) {
             if (position.follows(jungleBoundary.lowerLeft())) {
                 position.add(new Vector2d(0, jungleHeight));

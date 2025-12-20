@@ -9,10 +9,12 @@ import java.util.List;
 
 public class RandomPositionGenerator implements Iterable<Vector2d> {
     private final List<Vector2d> allPositions;
-    private final int grassNum;
+    private final int itemNum;
+    private final boolean unique;
 
-    public RandomPositionGenerator(Boundary boundaries, int grassNum) {
-        this.grassNum = grassNum;
+    public RandomPositionGenerator(Boundary boundaries, int itemNum, boolean unique) {
+        this.itemNum = itemNum;
+        this.unique = unique;
         Vector2d lowerLeft = boundaries.lowerLeft();
         Vector2d upperRight = boundaries.upperRight();
         this.allPositions = new ArrayList<>();
@@ -25,7 +27,11 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
 
     @Override
     public Iterator<Vector2d> iterator() {
-        return new RandomPositionIterator(allPositions, grassNum);
+        if (this.unique) {
+            return new UniqueRandomPositionIterator(allPositions, itemNum);
+        } else {
+            return new RandomPositionIterator(allPositions, itemNum);
+        }
     }
 }
 

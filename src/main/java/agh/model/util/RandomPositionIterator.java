@@ -10,35 +10,25 @@ import java.util.Random;
 public class RandomPositionIterator implements Iterator<Vector2d> {
     private final List<Vector2d> positions;
     private final int grassNum;
-    private int currentPosition;
+    private int alreadyGenerated;
     private final Random rng;
 
     public RandomPositionIterator(List<Vector2d> allPositions, int grassNum) {
         this.grassNum = grassNum;
-        this.currentPosition = 0;
+        this.alreadyGenerated = 0;
         this.rng = new Random();
         this.positions = new ArrayList<>(allPositions);
     }
 
     @Override
     public boolean hasNext() {
-        return currentPosition < grassNum;
+        return alreadyGenerated < grassNum;
     }
 
     @Override
     public Vector2d next() {
-        int remainingCount = positions.size() - currentPosition;
-        int randomOffset = rng.nextInt(remainingCount);
-        int swapIndex = currentPosition + randomOffset;
-
-        Vector2d randomPosition = positions.get(swapIndex);
-        Vector2d temp = positions.get(currentPosition);
-        positions.set(currentPosition, randomPosition);
-        positions.set(swapIndex, temp);
-
-        currentPosition++;
-
-        return randomPosition;
+        alreadyGenerated++;
+        return positions.get(rng.nextInt(positions.size() - 1));
     }
 }
 

@@ -15,7 +15,7 @@ public class WorldMap {
     private int emptySquares;
 
     public WorldMap(int width, int height) {
-        this.boundary = new Boundary(new Vector2d(0, 0),  new Vector2d(width-1, height-1));
+        this.boundary = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
         this.jungle = createJungle();
         this.emptySquares = width * height;
     }
@@ -24,9 +24,10 @@ public class WorldMap {
     public void placeAnimal(Animal animal) {
         if (!isAnimalAt(animal.getPosition())) {
             emptySquares--;
-        };
-
+        }
+        ;
         animals.put(animal.getPosition(), animal);
+        this.mapChanged("%s was placed at %s".formatted(animal, animal.getPosition()));
     }
 
     public void removeAnimal(Animal animal) {
@@ -34,19 +35,22 @@ public class WorldMap {
     }
 
     public void placeGrass(Grass grass) {
+        emptySquares--;
+        grasses.put(grass.getPosition(), grass);
     }
 
-    public void removeGrass(Grass grass) {}
+    public void removeGrass(Grass grass) {
+    }
 
     private Boundary createJungle() {
         int jungleHeight = (int) (getHeight() * 0.2);
         int jungleStart = (getHeight() - jungleHeight) / 2;
         int jungleEnd = jungleStart + jungleHeight - 1;
-        return new Boundary(new Vector2d(0, jungleStart), new Vector2d(getWidth()-1, jungleEnd));
+        return new Boundary(new Vector2d(0, jungleStart), new Vector2d(getWidth() - 1, jungleEnd));
     }
 
     public boolean inBounds(Vector2d position) {
-        return position.follows(boundary.lowerLeft())  && position.precedes(boundary.upperRight());
+        return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
     }
 
     public Vector2d moveWhenOutOfBoundary(Vector2d position) {
@@ -67,6 +71,17 @@ public class WorldMap {
         }
 
         return new Vector2d(x, y);
+    }
+
+    public WorldElement objectAt(Vector2d position) {
+        if (isAnimalAt(position)) {
+            return animals.get(position);
+        }
+        return grasses.get(position);
+    }
+
+    public boolean isOccupied(Vector2d position) {
+        return isAnimalAt(position) || isGrassAt(position);
     }
 
     public boolean isAnimalAt(Vector2d position) {
