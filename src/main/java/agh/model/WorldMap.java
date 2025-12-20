@@ -22,11 +22,19 @@ public class WorldMap {
 
     // to do - jak wolne miejsce to trza odjac emptySquare--
     public void placeAnimal(Animal animal) {
+        if (!isAnimalAt(animal.getPosition())) {
+            emptySquares--;
+        };
+
+        animals.put(animal.getPosition(), animal);
     }
 
-    public void removeAnimal(Animal animal) {}
+    public void removeAnimal(Animal animal) {
+        animals.remove(animal.getPosition());
+    }
 
-    public void placeGrass(Grass grass) {}
+    public void placeGrass(Grass grass) {
+    }
 
     public void removeGrass(Grass grass) {}
 
@@ -61,16 +69,24 @@ public class WorldMap {
         return new Vector2d(x, y);
     }
 
+    public boolean isAnimalAt(Vector2d position) {
+        return animals.containsKey(position);
+    }
+
     public boolean isGrassAt(Vector2d position) {
         return grasses.containsKey(position);
     }
 
     public int getHeight() {
-        return boundary.upperRight().getY() + 1
+        return boundary.upperRight().getY() + 1;
     }
 
     public int getWidth() {
         return boundary.upperRight().getX() + 1;
+    }
+
+    public Boundary getMapBoundary() {
+        return boundary;
     }
 
     public Boundary getJungleBoundary() {
