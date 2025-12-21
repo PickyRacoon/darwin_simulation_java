@@ -31,18 +31,20 @@ public class GrassGenerator {
         RandomPositionGenerator randomJunglePositions = new RandomPositionGenerator(jungleBoundary, inJungleNum, true);
         for (Vector2d position : randomJunglePositions) {
             worldMap.placeGrass(new Grass(position));
+            inJungleNum--;
         }
 
+        if (inJungleNum > 0 ) {notInJungleNum += inJungleNum;}
         // kurde tu jest chyba za troche namieszane, chodzi o to żeby jakby zingorować to że istnieje jungle
         // i wygenerować losowo trawe mapy bez jungle, a potem rozdzielić w pół i wrzucić górą połowę nad jungle
 
         int jungleHeight = jungleBoundary.upperRight().getY() - jungleBoundary.lowerLeft().getY();
-        int worldHeightWithoutJungle = worldMap.getHeight() - jungleHeight;
-        Boundary mapWithoutJungleBoundaries = new Boundary(mapBoundary.lowerLeft(), new Vector2d(worldMap.getWidth(), worldHeightWithoutJungle));
+        int worldHeightWithoutJungle = worldMap.getHeight() - jungleHeight - 1;
+        Boundary mapWithoutJungleBoundaries = new Boundary(mapBoundary.lowerLeft(), new Vector2d(worldMap.getWidth()-1, worldHeightWithoutJungle-1));
         RandomPositionGenerator randomNonJunglePositions = new RandomPositionGenerator(mapWithoutJungleBoundaries, notInJungleNum, true);
         for (Vector2d position : randomNonJunglePositions) {
             if (position.follows(jungleBoundary.lowerLeft())) {
-                position.add(new Vector2d(0, jungleHeight));
+                position = position.add(new Vector2d(0, jungleHeight+1));
             }
             worldMap.placeGrass(new Grass(position));
         }

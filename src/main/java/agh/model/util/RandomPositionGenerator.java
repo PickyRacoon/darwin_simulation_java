@@ -18,8 +18,8 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
         Vector2d lowerLeft = boundaries.lowerLeft();
         Vector2d upperRight = boundaries.upperRight();
         this.allPositions = new ArrayList<>();
-        for (int x = lowerLeft.getX(); x < upperRight.getX(); x++) {
-            for (int y = lowerLeft.getY(); y < upperRight.getY(); y++) {
+        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+            for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
                 allPositions.add(new Vector2d(x, y));
             }
         }

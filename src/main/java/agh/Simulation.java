@@ -30,15 +30,17 @@ public class Simulation {
     }
 
     private void placeGrass() {
-        RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), numGrass, true);
-        for (Vector2d position: randomPositions) {
-            worldMap.placeGrass(new Grass(position));
-        }
+        GrassGenerator grassGenerator = new GrassGenerator(numGrass);
+        grassGenerator.createJungle(worldMap);
+//        RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), numGrass, true);
+//        for (Vector2d position: randomPositions) {
+//            worldMap.placeGrass(new Grass(position));
+//        }
     }
 
     public void run() {
         placeGrass();
-        placeAnimals();
+        //placeAnimals();
 
         // temporary do testów
         ConsoleMapVisualizer cmv = new ConsoleMapVisualizer(worldMap);

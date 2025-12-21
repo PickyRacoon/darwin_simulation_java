@@ -13,7 +13,7 @@ public class UniqueRandomPositionIterator implements Iterator<Vector2d> {
     private int currentPosition;
     private final Random rng;
 
-    public UniqueRandomPositionIterator(List<agh.model.Vector2d> allPositions, int grassNum) {
+    public UniqueRandomPositionIterator(List<Vector2d> allPositions, int grassNum) {
         this.grassNum = grassNum;
         this.currentPosition = 0;
         this.rng = new Random();
@@ -22,11 +22,11 @@ public class UniqueRandomPositionIterator implements Iterator<Vector2d> {
 
     @Override
     public boolean hasNext() {
-        return currentPosition < grassNum;
+        return currentPosition < grassNum && currentPosition != positions.size();
     }
 
     @Override
-    public agh.model.Vector2d next() {
+    public Vector2d next() {
         int remainingCount = positions.size() - currentPosition;
         int randomOffset = rng.nextInt(remainingCount);
         int swapIndex = currentPosition + randomOffset;
