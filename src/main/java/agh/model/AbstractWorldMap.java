@@ -1,6 +1,7 @@
 package agh.model;
 
 import agh.model.animal.Animal;
+import agh.model.util.ConsoleMapVisualizer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ public abstract class AbstractWorldMap {
     private final HashMap<Vector2d, Grass> grasses = new HashMap<>();
     private final Boundary boundary;
     private final List<MapChangeListener> observers = new ArrayList<>();
+    private final ConsoleMapVisualizer cmv = new ConsoleMapVisualizer(this); // temp dla testów
     private int emptySquares;
 
     public AbstractWorldMap(int width, int height) {
@@ -107,6 +109,11 @@ public abstract class AbstractWorldMap {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this, message);
         }
+    }
+
+    @Override
+    public String toString() {
+        return cmv.draw(getMapBoundary().lowerLeft(), getMapBoundary().upperRight());
     }
 
 }
