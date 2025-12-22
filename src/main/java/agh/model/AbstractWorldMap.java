@@ -161,6 +161,10 @@ public abstract class AbstractWorldMap {
         return grasses.keySet();
     }
 
+    public Set<Vector2d> getAnimalPositions() {
+        return animals.keySet();
+    }
+
     public int getHeight() {
         return boundary.upperRight().getY() + 1;
     }

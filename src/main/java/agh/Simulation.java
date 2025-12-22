@@ -2,12 +2,14 @@ package agh;
 
 import agh.model.*;
 import agh.model.animal.Animal;
+import agh.model.animal.Genotype;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.RandomPositionGenerator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Simulation {
     private static final int GRASS_ENERGY = 5;
@@ -88,6 +90,7 @@ public class Simulation {
             List<Animal> animalsAtPosition = worldMap.getAnimalsAt(position);
             if (animalsAtPosition.isEmpty()) continue;
 
+            // wersja niemozliwego swiata ze najslabszy zjada :>
             Animal eater = animalsAtPosition.stream()
                     .min(Comparator.comparingInt(Animal::getEnergy))
                     .orElse(null);
@@ -99,7 +102,32 @@ public class Simulation {
         }
     }
 
-    private void procreate() {}
+    private void procreate() {
+        List<Vector2d> animalPositions = new ArrayList<>(worldMap.getAnimalPositions());
+
+        for (Vector2d position : animalPositions) {
+            List<Animal> animalsAtPosition = worldMap.getAnimalsAt(position);
+            if (animalsAtPosition.isEmpty() && animalsAtPosition.size() < 2) continue;
+
+            List<Animal> parents = animalsAtPosition.stream()
+                    .filter(animal -> animal.canBreed())
+                    .collect(Collectors.toList());
+
+            if (parents.size() < 2) continue;
+
+            parents.sort(Comparator.comparingInt(Animal::getEnergy).reversed());
+            Animal parent1 = parents.get(0);
+            Animal parent2 = parents.get(1);
+
+            Genotype childGenotype = Genotype.crossGenotype(parent1, parent2);
+            Animal child = new Animal(position, childGenotype);
+
+            parent1.breed();
+            parent2.breed();
+
+            worldMap.placeAnimal(child);
+        }
+    }
 
     private void growNewPlants() {}
 

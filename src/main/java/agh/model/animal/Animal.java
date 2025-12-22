@@ -10,14 +10,14 @@ import java.util.UUID;
 public class Animal implements WorldElement {
     private static final int BREED_MIN_ENERGY = 77;     // parametr
     private static final int ENERGY_USED_TO_BREED = 22;     // parametr
-    private static final int ENERGY_AFTER_DAY = 20;       // parametr
+    private static final int ENERGY_AFTER_DAY = 5;       // parametr
 
     private final Genotype genotype;
     private final UUID animalId = UUID.randomUUID();
 
     private Vector2d position;
     private MapDirection direction;
-    private int energy = 97;    // parametr na poczatek
+    private int energy = 200;    // parametr na poczatek
     private int daysAlive = 0;
     private boolean isAlive = true;
     private int numberOfBreedings = 0;
