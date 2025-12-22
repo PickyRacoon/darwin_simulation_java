@@ -29,7 +29,7 @@ public class Animal implements WorldElement {
         this.position = position;
     }
 
-    void move() {
+    public void move() {
         genotype.nextGenomIndex();
         direction.rotation(genotype.getActievGenomIndex());
         energy -= ENERGY_AFTER_DAY;
