@@ -1,20 +1,20 @@
 package agh.model.util;
 
 import agh.model.Vector2d;
-import agh.model.WorldMap;
+import agh.model.JungleWorldMap;
 
 public class ConsoleMapVisualizer {
     private static final String EMPTY_CELL = " ";
     private static final String FRAME_SEGMENT = "-";
     private static final String CELL_SEGMENT = "|";
-    private final WorldMap map;
+    private final JungleWorldMap map;
 
     /**
      * Initializes the MapVisualizer with an instance of map to visualize.
      *
      * @param map
      */
-    public ConsoleMapVisualizer(WorldMap map) {
+    public ConsoleMapVisualizer(JungleWorldMap map) {
         this.map = map;
     }
 

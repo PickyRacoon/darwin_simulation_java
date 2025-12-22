@@ -6,17 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class WorldMap {
+public abstract class AbstractWorldMap {
     private final HashMap<Vector2d, Animal> animals = new HashMap<>();
     private final HashMap<Vector2d, Grass> grasses = new HashMap<>();
     private final Boundary boundary;
-    private final Boundary jungle;
     private final List<MapChangeListener> observers = new ArrayList<>();
     private int emptySquares;
 
-    public WorldMap(int width, int height) {
+    public AbstractWorldMap(int width, int height) {
         this.boundary = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
-        this.jungle = createJungle();
         this.emptySquares = width * height;
     }
 
@@ -25,7 +23,6 @@ public class WorldMap {
         if (!isAnimalAt(animal.getPosition())) {
             emptySquares--;
         }
-        ;
         animals.put(animal.getPosition(), animal);
         this.mapChanged("%s was placed at %s".formatted(animal, animal.getPosition()));
     }
@@ -42,31 +39,25 @@ public class WorldMap {
     public void removeGrass(Grass grass) {
     }
 
-    private Boundary createJungle() {
-        int jungleHeight = (int) (getHeight() * 0.2);
-        int jungleStart = (getHeight() - jungleHeight) / 2;
-        int jungleEnd = jungleStart + jungleHeight - 1;
-        return new Boundary(new Vector2d(0, jungleStart), new Vector2d(getWidth() - 1, jungleEnd));
-    }
-
     public boolean inBounds(Vector2d position) {
         return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
     }
 
-    public Vector2d moveWhenOutOfBoundary(Vector2d position) {
+    public Vector2d wrapPoaition(Vector2d position) {
         int x = position.getX();
         int y = position.getY();
+
+        int minY = boundary.lowerLeft().getY();
+        int maxY = boundary.upperRight().getY();
         int width = getWidth();
 
-        if (y < boundary.lowerLeft().getY() || y > boundary.upperRight().getY()) {
-            return null;
+        if (y < minY || y > maxY) {
+            return position;
         }
 
-        if (x < boundary.lowerLeft().getX()) {
+        if (x < 0) {
             x = width - 1;
-        }
-
-        if (x >= width) {
+        } else if (x >= width) {
             x = 0;
         }
 
@@ -101,11 +92,7 @@ public class WorldMap {
     }
 
     public Boundary getMapBoundary() {
-        return boundary;
-    }
-
-    public Boundary getJungleBoundary() {
-        return jungle;
+        return new Boundary(boundary.lowerLeft(), boundary.upperRight());
     }
 
     public void addObserver(MapChangeListener observer) {
@@ -118,7 +105,7 @@ public class WorldMap {
 
     private void mapChanged(String message) {
         for (MapChangeListener observer : observers) {
-            observer.mapChanged(this);
+            observer.mapChanged(this, message);
         }
     }
 
