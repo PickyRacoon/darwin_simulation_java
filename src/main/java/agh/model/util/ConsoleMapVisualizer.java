@@ -3,6 +3,9 @@ package agh.model.util;
 import agh.model.AbstractWorldMap;
 import agh.model.Vector2d;
 import agh.model.JungleWorldMap;
+import agh.model.animal.Animal;
+
+import java.util.List;
 
 public class ConsoleMapVisualizer {
     private static final String EMPTY_CELL = " ";
@@ -70,10 +73,19 @@ public class ConsoleMapVisualizer {
 
     private String drawObject(Vector2d currentPosition) {
         if (this.map.isOccupied(currentPosition)) {
-            Object object = this.map.objectAt(currentPosition);
-            if (object != null) {
-                return object.toString();
+            if (this.map.isAnimalAt(currentPosition)) {
+                 List<Animal> animals= this.map.getAnimalsAt(currentPosition);
+                 if (animals.size() == 1) {
+                     return animals.getFirst().toString();
+                 } else {
+                     return String.valueOf(animals.size());
+                 }
             }
+            if (this.map.isGrassAt(currentPosition)){
+                return "*";
+            }
+            // znowu to jest okropnie napisane ale chciałem móc widzieć jak jest więcej zwierząt
+            // i tak cała ta klasa to placeholder do testów :P
         }
         return EMPTY_CELL;
     }

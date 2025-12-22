@@ -19,6 +19,7 @@ public class Simulation {
         this.numAnimals = numAnimals;
         this.numGrass = numGrass;
         this.worldMap = new JungleWorldMap(mapWidth, mapHeight);
+        this.initWorld();
     }
 
     private void placeAnimals() {
@@ -34,9 +35,11 @@ public class Simulation {
     }
 
     public void run() {
-        initWorld();
-
-
+        deleteDeadAnimals();
+        moveAnimals();
+        eat();
+        procreate();
+        growNewPlants();
     }
 
     private void initWorld() {
@@ -47,6 +50,14 @@ public class Simulation {
 
     private void deleteDeadAnimals() {}
 
-    private void moveAnimals() {}
+    private void moveAnimals() {
+        worldMap.moveAllAnimals();
+    }
+
+    private void eat() {}
+
+    private void procreate() {}
+
+    private void growNewPlants() {}
 
 }
