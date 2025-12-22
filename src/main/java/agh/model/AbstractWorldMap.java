@@ -5,6 +5,7 @@ import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.MultiValueHashMap;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,7 +32,14 @@ public abstract class AbstractWorldMap {
     }
 
     public void removeAnimal(Animal animal) {
-        animals.remove(animal.getPosition(), animal);
+        List<Animal> list = animals.get(animal.getPosition());
+        if (list != null) {
+            list.remove(animal);
+            if (list.isEmpty()) {
+                animals.remove(animal.getPosition());
+                emptySquares++;
+            }
+        }
     }
 
     public void placeGrass(Grass grass) {
@@ -115,6 +123,12 @@ public abstract class AbstractWorldMap {
         return animals.containsKey(position)
                 ? List.copyOf(animals.get(position))
                 : List.of();
+    }
+
+    public Collection<Animal> getAllAnimals() {
+        return animals.values().stream()
+                .flatMap(List::stream)
+                .toList();
     }
 
     public boolean isOccupied(Vector2d position) {

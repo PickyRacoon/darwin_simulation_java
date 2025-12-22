@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Animal implements WorldElement {
     private static final int BREED_MIN_ENERGY = 77;     // parametr
     private static final int ENERGY_USED_TO_BREED = 22;     // parametr
-    private static final int ENERGY_AFTER_DAY = 5;       // parametr
+    private static final int ENERGY_AFTER_DAY = 20;       // parametr
 
     private final Genotype genotype;
     private final UUID animalId = UUID.randomUUID();
@@ -106,7 +106,7 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-        return direction.toString();
+        return "ʕ•ᴥ•ʔ";
     }
  }
 

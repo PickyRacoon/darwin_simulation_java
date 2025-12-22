@@ -5,6 +5,9 @@ import agh.model.animal.Animal;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.RandomPositionGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Simulation {
     private final int mapWidth;
     private final int mapHeight;
@@ -48,10 +51,29 @@ public class Simulation {
         placeAnimals();
     }
 
-    private void deleteDeadAnimals() {}
+    private void deleteDeadAnimals() {
+        List<Animal> deadAnimals = worldMap.getAllAnimals().stream()
+                                            .filter(animal -> !animal.isAlive())
+                                            .toList(); // aby nie modyfikować mapy w trakcie iteracji
+
+        for (Animal animal : deadAnimals) {
+            worldMap.removeAnimal(animal);
+        }
+    }
 
     private void moveAnimals() {
-        worldMap.moveAllAnimals();
+        List<Animal> allAnimals = new ArrayList<>(worldMap.getAllAnimals());
+
+        for (Animal animal : allAnimals) {
+            worldMap.removeAnimal(animal);
+
+            animal.move();
+
+            Vector2d newPos = worldMap.wrapPosition(animal.getPosition());
+            animal.setPosition(newPos);
+
+            worldMap.placeAnimal(animal);
+        }
     }
 
     private void eat() {}
