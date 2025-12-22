@@ -1,9 +1,6 @@
 package agh.model.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MultiValueHashMap<K, V> {
     private final HashMap<K, ArrayList<V>> map = new HashMap<>();
@@ -11,16 +8,24 @@ public class MultiValueHashMap<K, V> {
     public void put(K key, V value) {
         map.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
     }
+//    zwraca osobna liste ktora nie jest powiazana z mapa
+//    public List<V> get(K key) {
+//        return map.getOrDefault(key, new ArrayList<>());
+//    }
 
+    // jak nie istnieje zwraca null
     public List<V> get(K key) {
-        return map.getOrDefault(key, new ArrayList<>());
+        return map.get(key);
     }
 
     public void remove(K key, V value) {
-        map.computeIfPresent(key, (k, v) -> {
-            v.remove(value);
-            return v;
-        });
+        List<V> list = map.get(key);
+        if (list == null) return;
+
+        list.remove(value);
+        if (list.isEmpty()) {
+            map.remove(key);
+        }
     }
 
     public boolean containsKey(K key) {
@@ -31,4 +36,21 @@ public class MultiValueHashMap<K, V> {
         return map.keySet();
     }
 
+    public void remove(K key) {
+        map.remove(key);
+    }
+
+    public Collection<ArrayList<V>> values() {
+        return map.values();
+    }
+
+    public List<V> computeIfAbsent(K key) {
+        return map.computeIfAbsent(key, k -> new ArrayList<>());
+    }
+
 }
+
+
+
+
+

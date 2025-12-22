@@ -95,6 +95,10 @@ public class Animal implements WorldElement {
         return isAlive;
     }
 
+    public void setPosition(Vector2d position) {
+        this.position = position;
+    }
+
     @Override
     public Vector2d getPosition() {
         return position;

@@ -43,11 +43,41 @@ public abstract class AbstractWorldMap {
     }
 
     public void moveAllAnimals() {
-        for (Vector2d position : animals.keySet()){
-            for (Animal animal :animals.get(position)) {
-                animal.move();
-                mapChanged("%s moved from %s to %s".formatted(animal, position, animal.getPosition()));
+        // obejscie zeby nie zminiac listy po ktorej iterujemy
+        List<Animal> allAnimals = new ArrayList<>();
+
+        // wszystkie zwierzeta w jednej liscie
+        for (List<Animal> list : animals.values()) {
+            allAnimals.addAll(list);
+        }
+
+        for (Animal animal : allAnimals) {
+            Vector2d oldPos = animal.getPosition();
+
+            // usuniecie ze starej pozycji
+            List<Animal> list = animals.get(oldPos);
+            if (list != null) {
+                list.remove(animal);
+                if (animals.get(oldPos).isEmpty()) {
+                    animals.remove(oldPos);
+                    emptySquares++;
+                }
             }
+
+            animal.move();
+
+            // zeby zgodnie z mapa pelz
+            Vector2d newPos = wrapPosition(animal.getPosition());
+            animal.setPosition(newPos);
+
+            // dodanie animalka do nowej pozycji
+            if (!animals.containsKey(newPos)) {
+                emptySquares--;
+            }
+            animals.put(newPos, animal);
+
+            mapChanged("%s moved from %s to %s"
+                    .formatted(animal, oldPos, newPos));
         }
     }
 
@@ -82,7 +112,9 @@ public abstract class AbstractWorldMap {
 //        return grasses.get(position);
 //    }
     public List<Animal> getAnimalsAt(Vector2d position) {
-        return List.copyOf(animals.get(position));
+        return animals.containsKey(position)
+                ? List.copyOf(animals.get(position))
+                : List.of();
     }
 
     public boolean isOccupied(Vector2d position) {
