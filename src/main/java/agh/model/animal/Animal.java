@@ -24,31 +24,51 @@ public class Animal implements WorldElement {
 
     // konstruktor na staetowego animala
     public Animal(Vector2d position) {
-        this.direction = MapDirection.generateRandomDirection();
         this.genotype = new Genotype();
+        this.direction = MapDirection.generateRandomDirection();
         this.position = position;
     }
 
+    // konstruktor dla potomkow
+    public Animal(Vector2d position, Genotype genotype) {
+        this.position = position;
+        this.genotype = genotype;
+        this.direction = MapDirection.generateRandomDirection();
+    }
+
+    // konstruktor dla testow
+    public Animal(Vector2d position, MapDirection direction, Genotype genotype) {
+        this.position = position;
+        this.genotype = genotype;
+        this.direction = direction;
+    }
+
     public void move() {
-        genotype.nextGenomIndex();
-        direction.rotation(genotype.getActievGenomIndex());
+        if (!isAlive) {
+            return;
+        }
+        int gene = genotype.currentGenomValue();
+        direction = direction.rotation(gene);
+        position = position.add(direction.toUnitVector());
         energy -= ENERGY_AFTER_DAY;
         daysAlive += 1;
-        position = position.add(direction.toUnitVector());
-        // jeszcze ze zjada tylko trza najpierw mape ogarnac
+        if (energy <= 0) {
+            die();
+        }
+        genotype.nextGenomIndex();
     }
 
     public void breed() {
-        energy -= BREED_MIN_ENERGY;
+        energy -= ENERGY_USED_TO_BREED;
         numberOfBreedings += 1;
     }
 
     public void eat(int grassEnergy) {
         energy += grassEnergy;
         // jezeli zakladamy ze mamy limit energii
-        if (energy > 100) {
-            energy = 100;
-        }
+//        if (energy > 100) {
+//            energy = 100;
+//        }
     }
 
     public void die() {
@@ -69,6 +89,10 @@ public class Animal implements WorldElement {
 
     public MapDirection getDirection() {
         return direction;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 
     @Override

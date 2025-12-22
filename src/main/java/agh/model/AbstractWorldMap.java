@@ -55,7 +55,7 @@ public abstract class AbstractWorldMap {
         return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
     }
 
-    public Vector2d wrapPoaition(Vector2d position) {
+    public Vector2d wrapPosition(Vector2d position) {
         int x = position.getX();
         int y = position.getY();
 
@@ -63,9 +63,8 @@ public abstract class AbstractWorldMap {
         int maxY = boundary.upperRight().getY();
         int width = getWidth();
 
-        if (y < minY || y > maxY) {
-            return position;
-        }
+        if (y < minY) y = minY;
+        if (y > maxY) y = maxY;
 
         if (x < 0) {
             x = width - 1;

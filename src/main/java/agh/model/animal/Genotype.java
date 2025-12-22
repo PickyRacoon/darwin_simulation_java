@@ -20,7 +20,7 @@ public class Genotype {
     }
 
     public Genotype(List<Integer> genom) {
-        this.genom = genom;
+        this.genom = new ArrayList<>(genom);
     }
 
     // random genom dla poczatkowych zwierzakow
@@ -32,12 +32,16 @@ public class Genotype {
         return genom;
     }
 
+    public int currentGenomValue() {
+        return genom.get(actievGenomIndex);
+    }
+
     public int getActievGenomIndex() {
         return actievGenomIndex;
     }
 
     public void nextGenomIndex() {
-        actievGenomIndex = (actievGenomIndex + 1)  % genomLength;
+        this.actievGenomIndex = (actievGenomIndex + 1)  % genomLength;
     }
 
     public static Genotype crossGenotype(Animal parent1, Animal parent2) {
@@ -76,7 +80,7 @@ public class Genotype {
         return childGenotype;
     }
 
-    private void mutateGenom() {
+    public void mutateGenom() {
         int mutationLevel = RandomNumber.getRandomNumberInRange(MIN_MUTATION_LEVEL, MAX_MUTATION_LEVEL);
         for (int i = 0; i < mutationLevel; i++) {
             int index = RandomNumber.getRandomNumberInRange(0, genomLength-1);
@@ -86,6 +90,6 @@ public class Genotype {
     }
 
     public List<Integer> getGenom() {
-        return genom;
+        return List.copyOf(genom);
     }
 }
