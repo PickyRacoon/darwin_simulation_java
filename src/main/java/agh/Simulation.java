@@ -6,19 +6,21 @@ import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.RandomPositionGenerator;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Simulation {
-    private final int mapWidth;
-    private final int mapHeight;
+    private static final int GRASS_ENERGY = 5;
+//    private final int mapWidth;
+//    private final int mapHeight;
     private final int numAnimals;
     private final int numGrass;
     private final JungleWorldMap worldMap;
     private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
 
     public Simulation(int mapWidth, int mapHeight, int numAnimals, int numGrass) {
-        this.mapWidth = mapWidth;
-        this.mapHeight = mapHeight;
+//        this.mapWidth = mapWidth;
+//        this.mapHeight = mapHeight;
         this.numAnimals = numAnimals;
         this.numGrass = numGrass;
         this.worldMap = new JungleWorldMap(mapWidth, mapHeight);
@@ -76,7 +78,26 @@ public class Simulation {
         }
     }
 
-    private void eat() {}
+    private void eat() {
+        List<Vector2d> grassPositions = new ArrayList<>(worldMap.getGrassPositions());
+
+        for (Vector2d position : grassPositions) {
+            Grass grass = worldMap.getGrassAt(position);
+            if (grass == null) continue;
+
+            List<Animal> animalsAtPosition = worldMap.getAnimalsAt(position);
+            if (animalsAtPosition.isEmpty()) continue;
+
+            Animal eater = animalsAtPosition.stream()
+                    .min(Comparator.comparingInt(Animal::getEnergy))
+                    .orElse(null);
+
+            if (eater != null) {
+                eater.eat(GRASS_ENERGY);
+                worldMap.removeGrass(grass);
+            }
+        }
+    }
 
     private void procreate() {}
 

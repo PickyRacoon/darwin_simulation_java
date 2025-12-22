@@ -4,10 +4,7 @@ import agh.model.animal.Animal;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.MultiValueHashMap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractWorldMap {
     private final MultiValueHashMap<Vector2d, Animal> animals = new MultiValueHashMap<>();
@@ -24,7 +21,8 @@ public abstract class AbstractWorldMap {
 
     // to do - jak wolne miejsce to trza odjac emptySquare--
     public void placeAnimal(Animal animal) {
-        if (!isAnimalAt(animal.getPosition())) {
+        Vector2d position = animal.getPosition();
+        if (!isAnimalAt(position) && !isGrassAt(position)) {
             emptySquares--;
         }
         animals.put(animal.getPosition(), animal);
@@ -32,22 +30,34 @@ public abstract class AbstractWorldMap {
     }
 
     public void removeAnimal(Animal animal) {
-        List<Animal> list = animals.get(animal.getPosition());
+        Vector2d position = animal.getPosition();
+        List<Animal> list = animals.get(position);
         if (list != null) {
             list.remove(animal);
             if (list.isEmpty()) {
                 animals.remove(animal.getPosition());
-                emptySquares++;
+                if (!isGrassAt(position)) {
+                    emptySquares++;
+                }
             }
         }
     }
 
     public void placeGrass(Grass grass) {
-        emptySquares--;
-        grasses.put(grass.getPosition(), grass);
+        Vector2d position = grass.getPosition();
+        if (!grasses.containsKey(position) && !isAnimalAt(position)) {
+            emptySquares--;
+        }
+        grasses.put(position, grass);
     }
 
     public void removeGrass(Grass grass) {
+        Vector2d position = grass.getPosition();
+        if (grasses.remove(position) != null) {
+            if (!isAnimalAt(position)) {
+                emptySquares++;
+            }
+        }
     }
 
     public void moveAllAnimals() {
@@ -141,6 +151,14 @@ public abstract class AbstractWorldMap {
 
     public boolean isGrassAt(Vector2d position) {
         return grasses.containsKey(position);
+    }
+
+    public Grass getGrassAt(Vector2d position) {
+        return grasses.get(position);
+    }
+
+    public Set<Vector2d> getGrassPositions() {
+        return grasses.keySet();
     }
 
     public int getHeight() {
