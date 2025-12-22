@@ -5,21 +5,19 @@ import agh.model.animal.Animal;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.RandomPositionGenerator;
 
-import java.util.Random;
-
 public class Simulation {
     private final int mapWidth;
     private final int mapHeight;
     private final int numAnimals;
     private final int numGrass;
-    private final WorldMap worldMap;
+    private final JungleWorldMap worldMap;
 
     public Simulation(int mapWidth, int mapHeight, int numAnimals, int numGrass) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.numAnimals = numAnimals;
         this.numGrass = numGrass;
-        this.worldMap = new WorldMap(mapWidth, mapHeight);
+        this.worldMap = new JungleWorldMap(mapWidth, mapHeight);
     }
 
     private void placeAnimals() {

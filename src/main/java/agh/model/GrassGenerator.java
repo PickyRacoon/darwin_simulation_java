@@ -9,7 +9,7 @@ public class GrassGenerator {
         this.numberOfGrasses = numberOfGrasses;
     }
 
-    public void createJungle(WorldMap worldMap) {
+    public void createJungle(JungleWorldMap worldMap) {
         // 80% procent szans ze grass wyrosnie w jungle
         // można później rozdzielić tą metodę na pare mniejszych
         Boundary jungleBoundary = worldMap.getJungleBoundary();
