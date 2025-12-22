@@ -51,9 +51,8 @@ public abstract class AbstractWorldMap {
         int maxY = boundary.upperRight().getY();
         int width = getWidth();
 
-        if (y < minY || y > maxY) {
-            return position;
-        }
+        if (y < minY) y = minY;
+        if (y > maxY) y = maxY;
 
         if (x < 0) {
             x = width - 1;
