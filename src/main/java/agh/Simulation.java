@@ -9,6 +9,7 @@ import agh.model.util.RandomPositionGenerator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Simulation {
@@ -46,7 +47,7 @@ public class Simulation {
         moveAnimals();
         eat();
         procreate();
-        growNewPlants();
+        growNewPlants(5);   // parametr
     }
 
     private void initWorld() {
@@ -90,16 +91,36 @@ public class Simulation {
             List<Animal> animalsAtPosition = worldMap.getAnimalsAt(position);
             if (animalsAtPosition.isEmpty()) continue;
 
-            // wersja niemozliwego swiata ze najslabszy zjada :>
-            Animal eater = animalsAtPosition.stream()
-                    .min(Comparator.comparingInt(Animal::getEnergy))
-                    .orElse(null);
+            // zasady z Q&A
+            Animal eater = idealAnimalToEatByQA(animalsAtPosition);
 
             if (eater != null) {
                 eater.eat(GRASS_ENERGY);
                 worldMap.removeGrass(grass);
             }
         }
+    }
+
+    private Animal idealAnimalToEatByQA(List<Animal> animals) {
+        if (animals.isEmpty()) return null;
+
+        // .max() zwraca optionalint dlatego musze orelse
+        int maxEnergy = animals.stream().mapToInt(Animal::getEnergy).max().orElse(Integer.MIN_VALUE);
+        List<Animal> candidates = animals.stream()
+                .filter(animal -> animal.getEnergy() == maxEnergy)
+                .collect(Collectors.toList());
+
+        int maxAge = candidates.stream().mapToInt(Animal::getDaysAlive).max().orElse(Integer.MIN_VALUE);
+        candidates = candidates.stream()
+                .filter(animal -> animal.getDaysAlive() == maxAge)
+                .collect(Collectors.toList());
+
+        int maxChildren = candidates.stream().mapToInt(Animal::getNumberOfBreedings).max().orElse(Integer.MIN_VALUE);
+        candidates = candidates.stream()
+                .filter(animal -> animal.getNumberOfBreedings() == maxChildren)
+                .collect(Collectors.toList());
+
+        return candidates.get(new Random().nextInt(candidates.size()));
     }
 
     private void procreate() {
@@ -110,7 +131,7 @@ public class Simulation {
             if (animalsAtPosition.isEmpty() && animalsAtPosition.size() < 2) continue;
 
             List<Animal> parents = animalsAtPosition.stream()
-                    .filter(animal -> animal.canBreed())
+                    .filter(Animal::canBreed)
                     .collect(Collectors.toList());
 
             if (parents.size() < 2) continue;
@@ -129,6 +150,12 @@ public class Simulation {
         }
     }
 
-    private void growNewPlants() {}
-
+    private void growNewPlants(int numOfNewGrasses) {
+        RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), numOfNewGrasses, true);
+        for (Vector2d position : randomPositions) {
+            if (worldMap.getGrassAt(position) == null) {
+                worldMap.placeGrass(new Grass(position));
+            }
+        }
+    }
 }

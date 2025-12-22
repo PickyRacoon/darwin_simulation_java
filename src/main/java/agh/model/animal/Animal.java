@@ -91,8 +91,16 @@ public class Animal implements WorldElement {
         return direction;
     }
 
+    public int getDaysAlive() {
+        return daysAlive;
+    }
+
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public  int getNumberOfBreedings() {
+        return numberOfBreedings;
     }
 
     public void setPosition(Vector2d position) {
