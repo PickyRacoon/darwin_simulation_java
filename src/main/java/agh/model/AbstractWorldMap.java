@@ -1,16 +1,19 @@
 package agh.model;
 
 import agh.model.animal.Animal;
+import agh.model.util.ConsoleMapVisualizer;
+import agh.model.util.MultiValueHashMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public abstract class AbstractWorldMap {
-    private final HashMap<Vector2d, Animal> animals = new HashMap<>();
+    private final MultiValueHashMap<Vector2d, Animal> animals = new MultiValueHashMap<>();
     private final HashMap<Vector2d, Grass> grasses = new HashMap<>();
     private final Boundary boundary;
     private final List<MapChangeListener> observers = new ArrayList<>();
+    private final ConsoleMapVisualizer cmv = new ConsoleMapVisualizer(this); // temp dla testów
     private int emptySquares;
 
     public AbstractWorldMap(int width, int height) {
@@ -28,7 +31,7 @@ public abstract class AbstractWorldMap {
     }
 
     public void removeAnimal(Animal animal) {
-        animals.remove(animal.getPosition());
+        animals.remove(animal.getPosition(), animal);
     }
 
     public void placeGrass(Grass grass) {
@@ -37,6 +40,15 @@ public abstract class AbstractWorldMap {
     }
 
     public void removeGrass(Grass grass) {
+    }
+
+    public void moveAllAnimals() {
+        for (Vector2d position : animals.keySet()){
+            for (Animal animal :animals.get(position)) {
+                animal.move();
+                mapChanged("%s moved from %s to %s".formatted(animal, position, animal.getPosition()));
+            }
+        }
     }
 
     public boolean inBounds(Vector2d position) {
@@ -63,11 +75,14 @@ public abstract class AbstractWorldMap {
         return new Vector2d(x, y);
     }
 
-    public WorldElement objectAt(Vector2d position) {
-        if (isAnimalAt(position)) {
-            return animals.get(position);
-        }
-        return grasses.get(position);
+//    public List<WorldElement> objectAt(Vector2d position) {
+//        if (isAnimalAt(position)) {
+//            return animals.get(position);
+//        }
+//        return grasses.get(position);
+//    }
+    public List<Animal> getAnimalsAt(Vector2d position) {
+        return List.copyOf(animals.get(position));
     }
 
     public boolean isOccupied(Vector2d position) {
@@ -106,6 +121,11 @@ public abstract class AbstractWorldMap {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this, message);
         }
+    }
+
+    @Override
+    public String toString() {
+        return cmv.draw(getMapBoundary().lowerLeft(), getMapBoundary().upperRight());
     }
 
 }
