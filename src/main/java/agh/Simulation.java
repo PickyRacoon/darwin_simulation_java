@@ -38,7 +38,7 @@ public class Simulation {
 
     public void run() {
         placeGrass();
-        //placeAnimals();
+        placeAnimals();
 
         // temporary do testów
         ConsoleMapVisualizer cmv = new ConsoleMapVisualizer(worldMap);

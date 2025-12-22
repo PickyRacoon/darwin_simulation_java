@@ -43,7 +43,7 @@ public abstract class AbstractWorldMap {
         return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
     }
 
-    public Vector2d wrapPoaition(Vector2d position) {
+    public Vector2d wrapPosition(Vector2d position) {
         int x = position.getX();
         int y = position.getY();
 
