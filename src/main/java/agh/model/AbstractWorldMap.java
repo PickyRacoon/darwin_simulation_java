@@ -4,9 +4,7 @@ import agh.model.animal.Animal;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.MultiValueHashMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractWorldMap {
     private final MultiValueHashMap<Vector2d, Animal> animals = new MultiValueHashMap<>();
@@ -23,7 +21,8 @@ public abstract class AbstractWorldMap {
 
     // to do - jak wolne miejsce to trza odjac emptySquare--
     public void placeAnimal(Animal animal) {
-        if (!isAnimalAt(animal.getPosition())) {
+        Vector2d position = animal.getPosition();
+        if (!isAnimalAt(position) && !isGrassAt(position)) {
             emptySquares--;
         }
         animals.put(animal.getPosition(), animal);
@@ -31,23 +30,72 @@ public abstract class AbstractWorldMap {
     }
 
     public void removeAnimal(Animal animal) {
-        animals.remove(animal.getPosition(), animal);
+        Vector2d position = animal.getPosition();
+        List<Animal> list = animals.get(position);
+        if (list != null) {
+            list.remove(animal);
+            if (list.isEmpty()) {
+                animals.remove(animal.getPosition());
+                if (!isGrassAt(position)) {
+                    emptySquares++;
+                }
+            }
+        }
     }
 
     public void placeGrass(Grass grass) {
-        emptySquares--;
-        grasses.put(grass.getPosition(), grass);
+        Vector2d position = grass.getPosition();
+        if (!grasses.containsKey(position) && !isAnimalAt(position)) {
+            emptySquares--;
+        }
+        grasses.put(position, grass);
     }
 
     public void removeGrass(Grass grass) {
+        Vector2d position = grass.getPosition();
+        if (grasses.remove(position) != null) {
+            if (!isAnimalAt(position)) {
+                emptySquares++;
+            }
+        }
     }
 
     public void moveAllAnimals() {
-        for (Vector2d position : animals.keySet()){
-            for (Animal animal :animals.get(position)) {
-                animal.move();
-                mapChanged("%s moved from %s to %s".formatted(animal, position, animal.getPosition()));
+        // obejscie zeby nie zminiac listy po ktorej iterujemy
+        List<Animal> allAnimals = new ArrayList<>();
+
+        // wszystkie zwierzeta w jednej liscie
+        for (List<Animal> list : animals.values()) {
+            allAnimals.addAll(list);
+        }
+
+        for (Animal animal : allAnimals) {
+            Vector2d oldPos = animal.getPosition();
+
+            // usuniecie ze starej pozycji
+            List<Animal> list = animals.get(oldPos);
+            if (list != null) {
+                list.remove(animal);
+                if (animals.get(oldPos).isEmpty()) {
+                    animals.remove(oldPos);
+                    emptySquares++;
+                }
             }
+
+            animal.move();
+
+            // zeby zgodnie z mapa pelz
+            Vector2d newPos = wrapPosition(animal.getPosition());
+            animal.setPosition(newPos);
+
+            // dodanie animalka do nowej pozycji
+            if (!animals.containsKey(newPos)) {
+                emptySquares--;
+            }
+            animals.put(newPos, animal);
+
+            mapChanged("%s moved from %s to %s"
+                    .formatted(animal, oldPos, newPos));
         }
     }
 
@@ -82,7 +130,15 @@ public abstract class AbstractWorldMap {
 //        return grasses.get(position);
 //    }
     public List<Animal> getAnimalsAt(Vector2d position) {
-        return List.copyOf(animals.get(position));
+        return animals.containsKey(position)
+                ? List.copyOf(animals.get(position))
+                : List.of();
+    }
+
+    public Collection<Animal> getAllAnimals() {
+        return animals.values().stream()
+                .flatMap(List::stream)
+                .toList();
     }
 
     public boolean isOccupied(Vector2d position) {
@@ -95,6 +151,18 @@ public abstract class AbstractWorldMap {
 
     public boolean isGrassAt(Vector2d position) {
         return grasses.containsKey(position);
+    }
+
+    public Grass getGrassAt(Vector2d position) {
+        return grasses.get(position);
+    }
+
+    public Set<Vector2d> getGrassPositions() {
+        return grasses.keySet();
+    }
+
+    public Set<Vector2d> getAnimalPositions() {
+        return animals.keySet();
     }
 
     public int getHeight() {

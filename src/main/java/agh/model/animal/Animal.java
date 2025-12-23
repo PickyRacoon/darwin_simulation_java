@@ -17,7 +17,7 @@ public class Animal implements WorldElement {
 
     private Vector2d position;
     private MapDirection direction;
-    private int energy = 97;    // parametr na poczatek
+    private int energy = 200;    // parametr na poczatek
     private int daysAlive = 0;
     private boolean isAlive = true;
     private int numberOfBreedings = 0;
@@ -91,8 +91,20 @@ public class Animal implements WorldElement {
         return direction;
     }
 
+    public int getDaysAlive() {
+        return daysAlive;
+    }
+
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public  int getNumberOfBreedings() {
+        return numberOfBreedings;
+    }
+
+    public void setPosition(Vector2d position) {
+        this.position = position;
     }
 
     @Override
@@ -102,7 +114,7 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-        return direction.toString();
+        return "ʕ•ᴥ•ʔ";
     }
  }
 
