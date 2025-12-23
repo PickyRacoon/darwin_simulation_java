@@ -11,10 +11,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GenotypeTest {
-    SimulationConfig config = new SimulationConfig(new JungleWorldMap(10, 10), 2,
-            2, 5, 5, 100, 5,
-            55, 22, 1, 4, 10);
-
+    SimulationConfig config = new SimulationConfig(
+            new JungleWorldMap(10, 10),
+            2,
+            2,
+            5,
+            5,
+            100,
+            5,
+            55,
+            22,
+            1,
+            4,
+            10
+    );
 
     @Test
     void genotypeShouldHaveCorrectLength() {

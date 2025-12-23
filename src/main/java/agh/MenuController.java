@@ -3,6 +3,7 @@ package agh;
 import agh.model.AbstractWorldMap;
 import agh.model.JungleWorldMap;
 import agh.model.presenter.SimulationPresenter;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,6 +13,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuController {
     @FXML
@@ -42,11 +45,18 @@ public class MenuController {
     private Spinner<Integer> numAnimals;
     @FXML
     private Spinner<Integer> numGrass;
+
     private Stage stage;
 
 
     public void setStage(Stage stage) {
         this.stage = stage;
+
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Exiting application");
+            Platform.exit();       // konczy cale gui
+            System.exit(0);     // konczy jvm
+        });
     }
 
     @FXML
@@ -84,6 +94,11 @@ public class MenuController {
         );
 
         presenter.createSimulation(config);
+
+        simulationStage.setOnCloseRequest(event -> {
+            presenter.stopSimulation();
+            System.out.println("Simulation closed");
+        });
 
         configureSimulationStage(simulationStage, root);
         simulationStage.show();

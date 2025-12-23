@@ -12,9 +12,20 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalTest {
-    SimulationConfig config = new SimulationConfig(new JungleWorldMap(10, 10), 2,
-            2, 5, 5, 100, 5,
-            55, 22, 1, 4, 10);
+    SimulationConfig config = new SimulationConfig(
+            new JungleWorldMap(10, 10),
+            2,
+            2,
+            5,
+            5,
+            100,
+            5,
+            55,
+            22,
+            1,
+            4,
+            10
+    );
 
     @Test
     void animalMovesAndLosesEnergy() {
