@@ -123,12 +123,12 @@ public abstract class AbstractWorldMap {
         return new Vector2d(x, y);
     }
 
-//    public List<WorldElement> objectAt(Vector2d position) {
-//        if (isAnimalAt(position)) {
-//            return animals.get(position);
-//        }
-//        return grasses.get(position);
-//    }
+    public List<WorldElement> objectAt(Vector2d position) {
+        if (isAnimalAt(position)) {
+            return List.copyOf(animals.get(position));
+        }
+        return List.of(grasses.get(position));
+    }
     public List<Animal> getAnimalsAt(Vector2d position) {
         return animals.containsKey(position)
                 ? List.copyOf(animals.get(position))
