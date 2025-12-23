@@ -13,19 +13,34 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Simulation implements Runnable {
-    private static final int GRASS_ENERGY = 5;
-    private boolean isStopped = false;
+    private final int grassEnergy;
+    private final int numDailyGrass;
+    private final int animalStartEnergy;
+    private final int animalLooseEnergy;
+    private final int animalMinBreedEnergy;
+    private final int animalEnergyUsedToBreed;
+    private final int minNumMutations;
+    private final int maxNumMutations;
+    private final int genotypeLen;
     private final int numAnimals;
     private final int numGrass;
     private final AbstractWorldMap worldMap;
-    private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
-    //private final boolean modifiedSimulation;
+    private boolean isStopped = false;
+    //private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
 
     public Simulation(SimulationConfig config) {
+        this.worldMap = config.worldMap();
         this.numAnimals = config.numAnimals();
         this.numGrass = config.numGrass();
-        this.worldMap = config.worldMap();
-        //this.modifiedSimulation = config.modifiedSimulation();
+        this.grassEnergy = config.grassEnergy();
+        this.numDailyGrass = config.numDailyGrass();
+        this.animalStartEnergy = config.animalStartEnergy();
+        this.animalLooseEnergy = config.animalLooseEnergy();
+        this.animalMinBreedEnergy = config.animalMinBreedEnergy();
+        this.animalEnergyUsedToBreed = config.animalEnergyUsedToBreed();
+        this.minNumMutations = config.minNumMutations();
+        this.maxNumMutations = config.maxNumMutations();
+        this.genotypeLen = config.genotypeLen();
         this.initWorld();
     }
 
@@ -55,7 +70,7 @@ public class Simulation implements Runnable {
             moveAnimals();
             eat();
             procreate();
-            growNewPlants(5);
+            growNewPlants(numDailyGrass);
         }   // parametr
     }
 
@@ -112,7 +127,7 @@ public class Simulation implements Runnable {
             Animal eater = idealAnimalToEatByQA(animalsAtPosition);
 
             if (eater != null) {
-                eater.eat(GRASS_ENERGY);
+                eater.eat(grassEnergy);
                 worldMap.removeGrass(grass);
             }
         }
