@@ -51,11 +51,15 @@ public class MenuController {
 
     @FXML
     public void onStartSimulation() throws IOException {
+        // nowy stage dla kazdej symulacji
+        Stage simulationStage = new Stage();
+
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
         BorderPane root = loader.load();
+
         SimulationPresenter presenter = loader.getController();
-        presenter.setStage(stage);
+        presenter.setStage(simulationStage);
 
         AbstractWorldMap worldMap;
         if (!simulationVariation.isSelected()) {
@@ -63,22 +67,33 @@ public class MenuController {
         } else {
             worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue()); // tutaj będzie druga mapa
         }
-        SimulationConfig config = new SimulationConfig(worldMap, numAnimals.getValue(), numGrass.getValue(), grassEnergy.getValue(),
-                numDailyGrass.getValue(), animalStartEnergy.getValue(), animalLooseEnergy.getValue(), animalMinBreedEnergy.getValue(),
-                animalEnergyUsedToBreed.getValue(), minNumMutations.getValue(), maxNumMutations.getValue(), genotypeLen.getValue());
+
+        SimulationConfig config = new SimulationConfig(
+                worldMap,
+                numAnimals.getValue(),
+                numGrass.getValue(),
+                grassEnergy.getValue(),
+                numDailyGrass.getValue(),
+                animalStartEnergy.getValue(),
+                animalLooseEnergy.getValue(),
+                animalMinBreedEnergy.getValue(),
+                animalEnergyUsedToBreed.getValue(),
+                minNumMutations.getValue(),
+                maxNumMutations.getValue(),
+                genotypeLen.getValue()
+        );
 
         presenter.createSimulation(config);
 
-        configureSimulationStage(stage, root);
-        stage.show();
+        configureSimulationStage(simulationStage, root);
+        simulationStage.show();
     }
-
 
     private void configureSimulationStage(Stage stage, BorderPane viewRoot) {
         var scene = new Scene(viewRoot);
         stage.setScene(scene);
 
-        stage.setTitle("Menu");
+        stage.setTitle("Symulacja");
         stage.minWidthProperty().bind(viewRoot.minWidthProperty());
         stage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
