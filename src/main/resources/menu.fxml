@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Spinner?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            minHeight="550.0" minWidth="850.0"
+            fx:controller="agh.MenuController">
+    <top>
+        <Label>Witamy w symulatorze życia!</Label>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="10">
+            <HBox spacing="10">
+                <Label>Map width</Label>
+                <Spinner fx:id="mapWidth" initialValue="10" max="100" editable="true"/>
+            </HBox>
+            <HBox spacing="10">
+                <Label>Map height</Label>
+                <Spinner fx:id="mapHeigth" initialValue="10" max="100" editable="true"/>
+            </HBox>
+            <HBox spacing="10">
+                <Label>Number of Animals</Label>
+                <Spinner fx:id="numAnimals" initialValue="10" max="100" editable="true"/>
+            </HBox>
+            <HBox spacing="10">
+                <Label>Number of plants</Label>
+                <Spinner fx:id="numGrass" initialValue="10" max="100" editable="true"/>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <VBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button fx:id="startButton" onAction="#onStartSimulation" text="Start Simulation"/>
+        </VBox>
+    </bottom>
+</BorderPane>
+
+
+

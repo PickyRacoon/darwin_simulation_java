@@ -12,54 +12,71 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class Simulation {
+public class Simulation implements Runnable {
     private static final int GRASS_ENERGY = 5;
-//    private final int mapWidth;
-//    private final int mapHeight;
+    private boolean isStopped = false;
     private final int numAnimals;
     private final int numGrass;
-    private final JungleWorldMap worldMap;
+    private final AbstractWorldMap worldMap;
     private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
+    //private final boolean modifiedSimulation;
 
-    public Simulation(int mapWidth, int mapHeight, int numAnimals, int numGrass) {
-//        this.mapWidth = mapWidth;
-//        this.mapHeight = mapHeight;
-        this.numAnimals = numAnimals;
-        this.numGrass = numGrass;
-        this.worldMap = new JungleWorldMap(mapWidth, mapHeight);
+    public Simulation(SimulationConfig config) {
+        this.numAnimals = config.numAnimals();
+        this.numGrass = config.numGrass();
+        this.worldMap = config.worldMap();
+        //this.modifiedSimulation = config.modifiedSimulation();
         this.initWorld();
     }
 
     private void placeAnimals() {
         RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), numAnimals, false);
-        for (Vector2d position: randomPositions) {
+        for (Vector2d position : randomPositions) {
             worldMap.placeAnimal(new Animal(position));
         }
     }
 
     private void placeGrass() {
         GrassGenerator grassGenerator = new GrassGenerator(numGrass);
-        grassGenerator.createJungle(worldMap);
+        // grassGenerator.createJungle(worldMap);
+        // TODO trzeba naprawić
+
     }
 
+    @Override
     public void run() {
-        deleteDeadAnimals();
-        moveAnimals();
-        eat();
-        procreate();
-        growNewPlants(5);   // parametr
+        while (!isStopped) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            deleteDeadAnimals();
+            moveAnimals();
+            eat();
+            procreate();
+            growNewPlants(5);
+        }   // parametr
+    }
+
+    public void stopSimulation() {
+        isStopped = true;
+    }
+
+    public void startSimulation() {
+        isStopped = false;
     }
 
     private void initWorld() {
-        worldMap.addObserver(consoleDisplay);
+        // worldMap.addObserver(consoleDisplay); // potrzebne tylko do testów w konsoli
         placeGrass();
         placeAnimals();
     }
 
     private void deleteDeadAnimals() {
         List<Animal> deadAnimals = worldMap.getAllAnimals().stream()
-                                            .filter(animal -> !animal.isAlive())
-                                            .toList(); // aby nie modyfikować mapy w trakcie iteracji
+                .filter(animal -> !animal.isAlive())
+                .toList(); // aby nie modyfikować mapy w trakcie iteracji
 
         for (Animal animal : deadAnimals) {
             worldMap.removeAnimal(animal);
@@ -128,7 +145,7 @@ public class Simulation {
 
         for (Vector2d position : animalPositions) {
             List<Animal> animalsAtPosition = worldMap.getAnimalsAt(position);
-            if (animalsAtPosition.isEmpty() && animalsAtPosition.size() < 2) continue;
+            if (animalsAtPosition.isEmpty() || animalsAtPosition.size() < 2) continue;
 
             List<Animal> parents = animalsAtPosition.stream()
                     .filter(Animal::canBreed)
