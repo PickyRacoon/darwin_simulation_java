@@ -25,17 +25,11 @@ public class Simulation implements Runnable {
     }
 
     private void placeAnimals(int count) {
-        RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), count, false);
+        Boundary mapBoundary = worldMap.getMapBoundary();
+        RandomPositionGenerator randomPositions = new RandomPositionGenerator(mapBoundary.getAllPositions(), count, false);
         for (Vector2d position : randomPositions) {
             worldMap.placeAnimal(new Animal(position, config));
         }
-    }
-
-    private void placeGrass(int count) {
-        GrassGenerator grassGenerator = new GrassGenerator(count);
-        // grassGenerator.createJungle(worldMap);
-        // TODO trzeba naprawić
-
     }
 
     @Override
@@ -64,7 +58,6 @@ public class Simulation implements Runnable {
 
     public void initWorld() {
         // worldMap.addObserver(consoleDisplay); // potrzebne tylko do testów w konsoli
-        placeGrass(config.numGrass());
         placeAnimals(config.numAnimals());
     }
 
@@ -163,11 +156,7 @@ public class Simulation implements Runnable {
     }
 
     public void growNewPlants(int numOfNewGrasses) {
-        RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), numOfNewGrasses, true);
-        for (Vector2d position : randomPositions) {
-            if (worldMap.getGrassAt(position) == null) {
-                worldMap.placeGrass(new Grass(position));
-            }
-        }
+        GrassGenerator grassGenerator = new GrassGenerator();
+        grassGenerator.placeNewGrass(worldMap, numOfNewGrasses);
     }
 }
