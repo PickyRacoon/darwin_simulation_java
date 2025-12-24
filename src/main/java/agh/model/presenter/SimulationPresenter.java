@@ -2,6 +2,7 @@ package agh.model.presenter;
 
 import agh.Simulation;
 import agh.SimulationConfig;
+import agh.SimulationStatistics;
 import agh.model.*;
 import agh.model.animal.Animal;
 import javafx.application.Platform;
@@ -13,8 +14,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 
-import java.awt.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,6 +35,21 @@ public class SimulationPresenter implements MapChangeListener {
     private Canvas mapCanvas;
     @FXML
     private Button stopSimulation;
+    @FXML
+    private Label animalCountLabel;
+    @FXML
+    private Label grassCountLabel;
+    @FXML
+    private Label emptySquaresLabel;
+    @FXML
+    private Label avgEnergyLabel;
+    @FXML
+    private Label avgLifeSpanLabel;
+    @FXML
+    private Label avgChildrenLabel;
+    @FXML
+    private Label popularGenotypeLabel;
+
 
     private double cellSize;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -44,6 +61,7 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(AbstractWorldMap map, String message) {
         Platform.runLater(() -> {
             this.drawMap();
+            updateStats();
         });
     }
 
@@ -154,5 +172,17 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    private void updateStats() {
+        SimulationStatistics stats = simulation.getSimulationStatistics();
+
+        animalCountLabel.setText("Number of living animals: " + stats.animalCount());
+        grassCountLabel.setText("Number of grasses: " + stats.grassCount());
+        emptySquaresLabel.setText("Number of empty squares: " + stats.emptySquares());
+        avgEnergyLabel.setText(String.format("Average energy value for living animals: %.2f", stats.avgEnergy()));
+        avgLifeSpanLabel.setText(String.format("Average life span: %.2f", stats.avgLifeSpan()));
+        avgChildrenLabel.setText(String.format("Average number of children for living animals: %.2f", stats.avgChildrenCount()));
+        popularGenotypeLabel.setText("The most popular genotype: " + stats.popularGenotype());
     }
 }

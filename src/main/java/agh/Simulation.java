@@ -6,10 +6,7 @@ import agh.model.animal.Genotype;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.RandomPositionGenerator;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Simulation implements Runnable {
@@ -17,6 +14,7 @@ public class Simulation implements Runnable {
     private final AbstractWorldMap worldMap;
     private boolean isStopped = false;
     //private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
+    private final List<Animal> allDeadAnimals = new ArrayList<>();
 
     public Simulation(SimulationConfig config) {
         this.config = config;
@@ -67,6 +65,7 @@ public class Simulation implements Runnable {
                 .toList(); // aby nie modyfikować mapy w trakcie iteracji
 
         for (Animal animal : deadAnimals) {
+            allDeadAnimals.add(animal);
             worldMap.removeAnimal(animal);
         }
     }
@@ -158,5 +157,48 @@ public class Simulation implements Runnable {
     public void growNewPlants(int numOfNewGrasses) {
         GrassGenerator grassGenerator = new GrassGenerator();
         grassGenerator.placeNewGrass(worldMap, numOfNewGrasses);
+    }
+
+    public SimulationStatistics getSimulationStatistics() {
+        List<Animal> allAnimals = worldMap.getAllAnimals();
+        int animalsCount = allAnimals.size();
+        int grassCount = worldMap.getGrassPositions().size();
+        int emptySquares = worldMap.getEmptySquares();
+
+        double avgEnergy = allAnimals.stream()
+                .mapToInt(Animal::getEnergy)
+                .average()
+                .orElse(0.0);
+
+        double avgLifeSpan = allDeadAnimals.stream()
+                .mapToInt(Animal::getDaysAlive)
+                .average()
+                .orElse(0.0);
+
+        double avgChildrenCount = allAnimals.stream()
+                .mapToInt(Animal::getNumberOfBreedings)
+                .average()
+                .orElse(0.0);
+
+        Map<Genotype, Long> genCount = allAnimals.stream()
+                .collect(Collectors.groupingBy(
+                        Animal::getGenotype,
+                        Collectors.counting()
+                ));
+
+        List<Integer> mostPopular = genCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(entry -> entry.getKey().getGenom())
+                .orElse(List.of());
+
+        return new SimulationStatistics(
+                animalsCount,
+                grassCount,
+                emptySquares,
+                mostPopular,
+                avgEnergy,
+                avgLifeSpan,
+                avgChildrenCount
+        );
     }
 }
