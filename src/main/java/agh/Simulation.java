@@ -17,6 +17,7 @@ public class Simulation implements Runnable {
     private final AbstractWorldMap worldMap;
     private boolean isStopped = false;
     //private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
+    private final List<Animal> allDeadAnimals = new ArrayList<>();
 
     public Simulation(SimulationConfig config) {
         this.config = config;
@@ -74,6 +75,7 @@ public class Simulation implements Runnable {
                 .toList(); // aby nie modyfikować mapy w trakcie iteracji
 
         for (Animal animal : deadAnimals) {
+            allDeadAnimals.add(animal);
             worldMap.removeAnimal(animal);
         }
     }
@@ -169,5 +171,37 @@ public class Simulation implements Runnable {
                 worldMap.placeGrass(new Grass(position));
             }
         }
+    }
+
+    public SimulationStatistics getSimulationStatistics() {
+        List<Animal> allAnimals = worldMap.getAllAnimals();
+        int animalsCount = allAnimals.size();
+        int grassCount = worldMap.getGrassPositions().size();
+        int emptySquares = worldMap.getEmptySquares();
+
+        double avgEnergy = allAnimals.stream()
+                .mapToInt(Animal::getEnergy)
+                .average()
+                .orElse(0.0);
+
+        double avgLifeSpan = allDeadAnimals.stream()
+                .mapToInt(Animal::getDaysAlive)
+                .average()
+                .orElse(0.0);
+
+        double avgChildrenCount = allAnimals.stream()
+                .mapToInt(Animal::getNumberOfBreedings)
+                .average()
+                .orElse(0.0);
+
+        return new SimulationStatistics(
+                animalsCount,
+                grassCount,
+                emptySquares,
+                //List.of(0),
+                avgEnergy,
+                avgLifeSpan,
+                avgChildrenCount
+        );
     }
 }

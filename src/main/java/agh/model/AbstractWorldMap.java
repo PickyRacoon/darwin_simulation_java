@@ -41,6 +41,7 @@ public abstract class AbstractWorldMap {
                 }
             }
         }
+        mapChanged("Animal removed");
     }
 
     public void placeGrass(Grass grass) {
@@ -60,6 +61,7 @@ public abstract class AbstractWorldMap {
                 emptySquares++;
             }
         }
+        mapChanged("Grass removed");
     }
 
     public void moveAllAnimals() {
@@ -145,6 +147,10 @@ public abstract class AbstractWorldMap {
 
     public boolean isOccupied(Vector2d position) {
         return isAnimalAt(position) || isGrassAt(position);
+    }
+
+    public int getEmptySquares() {
+        return emptySquares;
     }
 
     public boolean isAnimalAt(Vector2d position) {

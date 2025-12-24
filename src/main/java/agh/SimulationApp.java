@@ -1,6 +1,5 @@
 package agh;
 
-import agh.model.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -34,4 +33,5 @@ public class SimulationApp extends Application {
         stage.minWidthProperty().bind(viewRoot.minWidthProperty());
         stage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
+
 }

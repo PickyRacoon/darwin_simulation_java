@@ -27,4 +27,18 @@
             </HBox>
         </VBox>
     </bottom>
+    <right>
+        <VBox fx:id="statsBox" spacing="5" alignment="TOP_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label fx:id="animalCountLabel" text="Animals: 0"/>
+            <Label fx:id="grassCountLabel" text="Grass: 0"/>
+            <Label fx:id="emptySquaresLabel" text="Empty Squares: 0"/>
+            <Label fx:id="avgEnergyLabel" text="Avg Energy: 0.0"/>
+            <Label fx:id="avgLifeSpanLabel" text="Avg Life: 0.0"/>
+            <Label fx:id="avgChildrenLabel" text="Avg Children: 0.0"/>
+            <Label fx:id="popularGenotypeLabel" text="Popular Genotype: []"/>
+        </VBox>
+    </right>
 </BorderPane>
