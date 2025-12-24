@@ -62,13 +62,13 @@ public class Simulation implements Runnable {
         isStopped = false;
     }
 
-    private void initWorld() {
+    public void initWorld() {
         // worldMap.addObserver(consoleDisplay); // potrzebne tylko do testów w konsoli
         placeGrass(config.numGrass());
         placeAnimals(config.numAnimals());
     }
 
-    private void deleteDeadAnimals() {
+    public void deleteDeadAnimals() {
         List<Animal> deadAnimals = worldMap.getAllAnimals().stream()
                 .filter(animal -> !animal.isAlive())
                 .toList(); // aby nie modyfikować mapy w trakcie iteracji
@@ -78,7 +78,7 @@ public class Simulation implements Runnable {
         }
     }
 
-    private void moveAnimals() {
+    public void moveAnimals() {
         List<Animal> allAnimals = new ArrayList<>(worldMap.getAllAnimals());
 
         for (Animal animal : allAnimals) {
@@ -93,7 +93,7 @@ public class Simulation implements Runnable {
         }
     }
 
-    private void eat() {
+    public void eat() {
         List<Vector2d> grassPositions = new ArrayList<>(worldMap.getGrassPositions());
 
         for (Vector2d position : grassPositions) {
@@ -113,7 +113,7 @@ public class Simulation implements Runnable {
         }
     }
 
-    private Animal idealAnimalToEatByQA(List<Animal> animals) {
+    public Animal idealAnimalToEatByQA(List<Animal> animals) {
         if (animals.isEmpty()) return null;
 
         // .max() zwraca optionalint dlatego musze orelse
@@ -135,7 +135,7 @@ public class Simulation implements Runnable {
         return candidates.get(new Random().nextInt(candidates.size()));
     }
 
-    private void procreate() {
+    public void procreate() {
         List<Vector2d> animalPositions = new ArrayList<>(worldMap.getAnimalPositions());
 
         for (Vector2d position : animalPositions) {
@@ -162,7 +162,7 @@ public class Simulation implements Runnable {
         }
     }
 
-    private void growNewPlants(int numOfNewGrasses) {
+    public void growNewPlants(int numOfNewGrasses) {
         RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), numOfNewGrasses, true);
         for (Vector2d position : randomPositions) {
             if (worldMap.getGrassAt(position) == null) {

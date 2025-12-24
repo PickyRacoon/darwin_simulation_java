@@ -51,6 +51,7 @@ public class SimulationPresenter implements MapChangeListener {
         this.worldMap = config.worldMap();
         this.worldMap.addObserver(this);
         this.simulation = new Simulation(config);
+        drawMap();
         executorService.submit(simulation);
     }
 
