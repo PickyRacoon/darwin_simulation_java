@@ -50,7 +50,7 @@ public abstract class AbstractWorldMap {
         }
         grasses.put(position, grass);
 
-        mapChanged("Grass was placed at %s".formatted(grass, grass.getPosition()));
+        mapChanged("Grass was placed at %s".formatted(grass.getPosition()));
     }
 
     public void removeGrass(Grass grass) {
