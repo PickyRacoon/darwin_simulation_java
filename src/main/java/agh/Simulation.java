@@ -13,46 +13,26 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Simulation implements Runnable {
-    private final int grassEnergy;
-    private final int numDailyGrass;
-    private final int animalStartEnergy;
-    private final int animalLooseEnergy;
-    private final int animalMinBreedEnergy;
-    private final int animalEnergyUsedToBreed;
-    private final int minNumMutations;
-    private final int maxNumMutations;
-    private final int genotypeLen;
-    private final int numAnimals;
-    private final int numGrass;
+    private final SimulationConfig config;
     private final AbstractWorldMap worldMap;
     private boolean isStopped = false;
     //private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
 
     public Simulation(SimulationConfig config) {
+        this.config = config;
         this.worldMap = config.worldMap();
-        this.numAnimals = config.numAnimals();
-        this.numGrass = config.numGrass();
-        this.grassEnergy = config.grassEnergy();
-        this.numDailyGrass = config.numDailyGrass();
-        this.animalStartEnergy = config.animalStartEnergy();
-        this.animalLooseEnergy = config.animalLooseEnergy();
-        this.animalMinBreedEnergy = config.animalMinBreedEnergy();
-        this.animalEnergyUsedToBreed = config.animalEnergyUsedToBreed();
-        this.minNumMutations = config.minNumMutations();
-        this.maxNumMutations = config.maxNumMutations();
-        this.genotypeLen = config.genotypeLen();
         this.initWorld();
     }
 
-    private void placeAnimals() {
-        RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), numAnimals, false);
+    private void placeAnimals(int count) {
+        RandomPositionGenerator randomPositions = new RandomPositionGenerator(worldMap.getMapBoundary(), count, false);
         for (Vector2d position : randomPositions) {
-            worldMap.placeAnimal(new Animal(position));
+            worldMap.placeAnimal(new Animal(position, config));
         }
     }
 
-    private void placeGrass() {
-        GrassGenerator grassGenerator = new GrassGenerator(numGrass);
+    private void placeGrass(int count) {
+        GrassGenerator grassGenerator = new GrassGenerator(count);
         // grassGenerator.createJungle(worldMap);
         // TODO trzeba naprawić
 
@@ -70,8 +50,8 @@ public class Simulation implements Runnable {
             moveAnimals();
             eat();
             procreate();
-            growNewPlants(numDailyGrass);
-        }   // parametr
+            growNewPlants(config.numDailyGrass());
+        }
     }
 
     public void stopSimulation() {
@@ -84,8 +64,8 @@ public class Simulation implements Runnable {
 
     private void initWorld() {
         // worldMap.addObserver(consoleDisplay); // potrzebne tylko do testów w konsoli
-        placeGrass();
-        placeAnimals();
+        placeGrass(config.numGrass());
+        placeAnimals(config.numAnimals());
     }
 
     private void deleteDeadAnimals() {
@@ -127,7 +107,7 @@ public class Simulation implements Runnable {
             Animal eater = idealAnimalToEatByQA(animalsAtPosition);
 
             if (eater != null) {
-                eater.eat(grassEnergy);
+                eater.eat(config.grassEnergy());
                 worldMap.removeGrass(grass);
             }
         }
@@ -172,8 +152,8 @@ public class Simulation implements Runnable {
             Animal parent1 = parents.get(0);
             Animal parent2 = parents.get(1);
 
-            Genotype childGenotype = Genotype.crossGenotype(parent1, parent2);
-            Animal child = new Animal(position, childGenotype);
+            Genotype childGenotype = Genotype.crossGenotype(parent1, parent2, config);
+            Animal child = new Animal(position, childGenotype, config);
 
             parent1.breed();
             parent2.breed();

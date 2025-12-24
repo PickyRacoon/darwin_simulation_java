@@ -1,5 +1,6 @@
 package agh.model.animal;
 
+import agh.SimulationConfig;
 import agh.model.RandomNumber;
 
 import java.util.ArrayList;
@@ -8,25 +9,26 @@ import java.util.List;
 public class Genotype {
     private static final int MIN_GENOM_NUMBER = 0;
     private static final int MAX_GENOM_NUMBER = 7;
-    private static final int MIN_MUTATION_LEVEL = 1;     // parametr
-    private static final int MAX_MUTATION_LEVEL = 4;     // parametr
 
-    private static final int genomLength = 10;     // parametr
+    //private static final int genomLength = 10;
+    private final SimulationConfig config;
     private final List<Integer> genom;
     private int actievGenomIndex = 0;
 
-    public Genotype() {
+    public Genotype(SimulationConfig config) {
+        this.config = config;
         this.genom = generateRandomGenom();
     }
 
-    public Genotype(List<Integer> genom) {
+    public Genotype(List<Integer> genom, SimulationConfig config) {
+        this.config = config;
         this.genom = new ArrayList<>(genom);
     }
 
     // random genom dla poczatkowych zwierzakow
     private List<Integer> generateRandomGenom() {
         List<Integer> genom = new ArrayList<>();
-        for (int i = 0; i < genomLength; i++) {
+        for (int i = 0; i < config.genotypeLen(); i++) {
             genom.add(RandomNumber.getRandomNumberInRange(MIN_GENOM_NUMBER, MAX_GENOM_NUMBER));
         }
         return genom;
@@ -41,10 +43,10 @@ public class Genotype {
     }
 
     public void nextGenomIndex() {
-        this.actievGenomIndex = (actievGenomIndex + 1)  % genomLength;
+        this.actievGenomIndex = (actievGenomIndex + 1)  % config.genotypeLen();
     }
 
-    public static Genotype crossGenotype(Animal parent1, Animal parent2) {
+    public static Genotype crossGenotype(Animal parent1, Animal parent2, SimulationConfig config) {
         List<Integer> childGenes = new ArrayList<>();
 
         Animal strongerParent, weakerParent;
@@ -61,29 +63,29 @@ public class Genotype {
 
         // udział genow silniejszego rodzica
         double ratio = (double) strongerParent.getEnergy() / (strongerParent.getEnergy() + weakerParent.getEnergy());
-        int splitIndex = (int) Math.round(genomLength * ratio);
+        int splitIndex = (int) Math.round(config.genotypeLen() * ratio);
 
         boolean takeFromLeft = RandomNumber.getRandomNumberInRange(0, 1) == 0;
 
         if (takeFromLeft) {
             // lewa czesc silniejszego + prawa czesc slabszego
             childGenes.addAll(strongerGenes.subList(0, splitIndex));
-            childGenes.addAll(weakerGenes.subList(splitIndex, genomLength));
+            childGenes.addAll(weakerGenes.subList(splitIndex, config.genotypeLen()));
         } else {
             // prawa czesc silniejszego + lewa czesc slabszego
-            childGenes.addAll(weakerGenes.subList(0, genomLength - splitIndex));
-            childGenes.addAll(strongerGenes.subList(genomLength - splitIndex, genomLength));
+            childGenes.addAll(weakerGenes.subList(0, config.genotypeLen() - splitIndex));
+            childGenes.addAll(strongerGenes.subList(config.genotypeLen() - splitIndex, config.genotypeLen()));
         }
 
-        Genotype childGenotype = new Genotype(childGenes);
+        Genotype childGenotype = new Genotype(childGenes, config);
         childGenotype.mutateGenom();
         return childGenotype;
     }
 
     public void mutateGenom() {
-        int mutationLevel = RandomNumber.getRandomNumberInRange(MIN_MUTATION_LEVEL, MAX_MUTATION_LEVEL);
+        int mutationLevel = RandomNumber.getRandomNumberInRange(config.minNumMutations(), config.maxNumMutations());
         for (int i = 0; i < mutationLevel; i++) {
-            int index = RandomNumber.getRandomNumberInRange(0, genomLength-1);
+            int index = RandomNumber.getRandomNumberInRange(0, config.genotypeLen()-1);
             int newGen = RandomNumber.getRandomNumberInRange(MIN_GENOM_NUMBER, MAX_GENOM_NUMBER);
             genom.set(index, newGen);
         }

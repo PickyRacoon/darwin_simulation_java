@@ -1,5 +1,6 @@
 package agh.model.animal;
 
+import agh.SimulationConfig;
 import agh.model.MapDirection;
 import agh.model.Vector2d;
 import agh.model.WorldElement;
@@ -8,39 +9,42 @@ import java.util.UUID;
 
 
 public class Animal implements WorldElement {
-    private static final int BREED_MIN_ENERGY = 77;     // parametr
-    private static final int ENERGY_USED_TO_BREED = 22;     // parametr
-    private static final int ENERGY_AFTER_DAY = 5;       // parametr
-
+    private final SimulationConfig config;
     private final Genotype genotype;
     private final UUID animalId = UUID.randomUUID();
 
     private Vector2d position;
     private MapDirection direction;
-    private int energy = 200;    // parametr na poczatek
+    private int energy;
     private int daysAlive = 0;
     private boolean isAlive = true;
     private int numberOfBreedings = 0;
 
     // konstruktor na staetowego animala
-    public Animal(Vector2d position) {
-        this.genotype = new Genotype();
+    public Animal(Vector2d position, SimulationConfig config) {
+        this.genotype = new Genotype(config);
         this.direction = MapDirection.generateRandomDirection();
         this.position = position;
+        this.config = config;
+        this.energy = config.animalStartEnergy();
     }
 
     // konstruktor dla potomkow
-    public Animal(Vector2d position, Genotype genotype) {
+    public Animal(Vector2d position, Genotype genotype, SimulationConfig config) {
         this.position = position;
         this.genotype = genotype;
+        this.config = config;
+        this.energy = config.animalEnergyUsedToBreed() * 2;
         this.direction = MapDirection.generateRandomDirection();
     }
 
     // konstruktor dla testow
-    public Animal(Vector2d position, MapDirection direction, Genotype genotype) {
+    public Animal(Vector2d position, MapDirection direction, Genotype genotype, SimulationConfig config) {
+        this.config = config;
         this.position = position;
         this.genotype = genotype;
         this.direction = direction;
+        this.energy = config.animalStartEnergy();
     }
 
     public void move() {
@@ -50,7 +54,7 @@ public class Animal implements WorldElement {
         int gene = genotype.currentGenomValue();
         direction = direction.rotation(gene);
         position = position.add(direction.toUnitVector());
-        energy -= ENERGY_AFTER_DAY;
+        energy -= config.animalLooseEnergy();
         daysAlive += 1;
         if (energy <= 0) {
             die();
@@ -59,8 +63,8 @@ public class Animal implements WorldElement {
     }
 
     public void breed() {
-        energy -= ENERGY_USED_TO_BREED;
-        numberOfBreedings += 1;
+        energy -= config.animalEnergyUsedToBreed();
+        numberOfBreedings++;
     }
 
     public void eat(int grassEnergy) {
@@ -76,7 +80,7 @@ public class Animal implements WorldElement {
     }
 
     public boolean canBreed() {
-        return energy >= BREED_MIN_ENERGY;
+        return energy >= config.animalMinBreedEnergy();
     }
 
     public int getEnergy() {
