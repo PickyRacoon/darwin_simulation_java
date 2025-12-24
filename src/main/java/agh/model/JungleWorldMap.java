@@ -9,9 +9,11 @@ import java.util.List;
 public class JungleWorldMap extends AbstractWorldMap{
     private final Boundary jungle;
 
-    public JungleWorldMap(int width, int height) {
-        super(width, height);
+    public JungleWorldMap(int width, int height, int numGrass) {
+        super(width, height, numGrass);
         this.jungle = createJungle();
+        generateGrass(numGrass);
+
     }
 
     private Boundary createJungle() {
@@ -19,6 +21,11 @@ public class JungleWorldMap extends AbstractWorldMap{
         int jungleStart = (getHeight() - jungleHeight) / 2;
         int jungleEnd = jungleStart + jungleHeight - 1;
         return new Boundary(new Vector2d(0, jungleStart), new Vector2d(getWidth() - 1, jungleEnd));
+    }
+
+    private void generateGrass(int numGrass) {
+        GrassGenerator grassGenerator = new GrassGenerator();
+        grassGenerator.createJungle(this, numGrass);
     }
 
     public Boundary getJungleBoundary() {

@@ -12,11 +12,13 @@ public abstract class AbstractWorldMap {
     private final Boundary boundary;
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final ConsoleMapVisualizer cmv = new ConsoleMapVisualizer(this); // temp dla testów
+    protected final int initNumGrass;
     private int emptySquares;
 
-    public AbstractWorldMap(int width, int height) {
+    public AbstractWorldMap(int width, int height, int numGrass) {
         this.boundary = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
         this.emptySquares = width * height;
+        this.initNumGrass = numGrass;
     }
 
     // to do - jak wolne miejsce to trza odjac emptySquare--

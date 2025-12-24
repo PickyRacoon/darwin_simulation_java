@@ -73,9 +73,9 @@ public class MenuController {
 
         AbstractWorldMap worldMap;
         if (!simulationVariation.isSelected()) {
-            worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue());
+            worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue());
         } else {
-            worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue()); // tutaj będzie druga mapa
+            worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue()); // tutaj będzie druga mapa
         }
 
         SimulationConfig config = new SimulationConfig(

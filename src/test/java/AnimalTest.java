@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalTest {
     SimulationConfig config = new SimulationConfig(
-            new JungleWorldMap(10, 10),
+            new JungleWorldMap(10, 10, 2),
             2,
             2,
             5,

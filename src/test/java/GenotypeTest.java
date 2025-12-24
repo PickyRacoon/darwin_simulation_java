@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GenotypeTest {
     SimulationConfig config = new SimulationConfig(
-            new JungleWorldMap(10, 10),
+            new JungleWorldMap(10, 10, 2),
             2,
             2,
             5,

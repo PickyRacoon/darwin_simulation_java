@@ -15,7 +15,7 @@ public class SimulationTest {
     @Test
     void testSimulationWithoutAnimals() {
         SimulationConfig config = new SimulationConfig(
-                new JungleWorldMap(10, 10),
+                new JungleWorldMap(10, 10, 2),
                 0,
                 2,
                 5,
