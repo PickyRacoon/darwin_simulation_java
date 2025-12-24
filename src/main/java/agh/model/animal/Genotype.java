@@ -92,6 +92,21 @@ public class Genotype {
     }
 
     public List<Integer> getGenom() {
-        return List.copyOf(genom);
+        return genom == null ? List.of() : List.copyOf(genom);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Genotype genotype = (Genotype) o;
+        return genom.equals(genotype.genom);
+    }
+
+    @Override
+    public int hashCode() {
+        return genom.hashCode();
+    }
+
 }

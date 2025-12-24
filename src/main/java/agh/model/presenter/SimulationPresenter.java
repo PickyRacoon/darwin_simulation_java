@@ -47,8 +47,8 @@ public class SimulationPresenter implements MapChangeListener {
     private Label avgLifeSpanLabel;
     @FXML
     private Label avgChildrenLabel;
-//    @FXML
-//    private Label popularGenotypeLabel;
+    @FXML
+    private Label popularGenotypeLabel;
 
 
     private double cellSize;
@@ -183,6 +183,6 @@ public class SimulationPresenter implements MapChangeListener {
         avgEnergyLabel.setText(String.format("Average energy value for living animals: %.2f", stats.avgEnergy()));
         avgLifeSpanLabel.setText(String.format("Average life span: %.2f", stats.avgLifeSpan()));
         avgChildrenLabel.setText(String.format("Average number of children for living animals: %.2f", stats.avgChildrenCount()));
-        //popularGenotypeLabel.setText("Popular Genotype: " + stats.popularGenotype());
+        popularGenotypeLabel.setText("The mosst popular genotype: " + stats.popularGenotype());
     }
 }

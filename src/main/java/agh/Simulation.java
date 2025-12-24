@@ -6,10 +6,7 @@ import agh.model.animal.Genotype;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.RandomPositionGenerator;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Simulation implements Runnable {
@@ -194,11 +191,22 @@ public class Simulation implements Runnable {
                 .average()
                 .orElse(0.0);
 
+        Map<Genotype, Long> genCount = allAnimals.stream()
+                .collect(Collectors.groupingBy(
+                        Animal::getGenotype,
+                        Collectors.counting()
+                ));
+
+        List<Integer> mostPopular = genCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(entry -> entry.getKey().getGenom())
+                .orElse(List.of());
+
         return new SimulationStatistics(
                 animalsCount,
                 grassCount,
                 emptySquares,
-                //List.of(0),
+                mostPopular,
                 avgEnergy,
                 avgLifeSpan,
                 avgChildrenCount
