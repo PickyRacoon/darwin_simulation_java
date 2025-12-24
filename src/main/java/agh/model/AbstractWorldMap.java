@@ -49,6 +49,8 @@ public abstract class AbstractWorldMap {
             emptySquares--;
         }
         grasses.put(position, grass);
+
+        mapChanged("Grass was placed at %s".formatted(grass, grass.getPosition()));
     }
 
     public void removeGrass(Grass grass) {
@@ -135,7 +137,7 @@ public abstract class AbstractWorldMap {
                 : List.of();
     }
 
-    public Collection<Animal> getAllAnimals() {
+    public List<Animal> getAllAnimals() {
         return animals.values().stream()
                 .flatMap(List::stream)
                 .toList();
