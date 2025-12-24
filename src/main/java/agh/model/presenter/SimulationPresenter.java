@@ -177,12 +177,12 @@ public class SimulationPresenter implements MapChangeListener {
     private void updateStats() {
         SimulationStatistics stats = simulation.getSimulationStatistics();
 
-        animalCountLabel.setText("Animals: " + stats.animalCount());
-        grassCountLabel.setText("Grass: " + stats.grassCount());
-        emptySquaresLabel.setText("Empty Squares: " + stats.emptySquares());
-        avgEnergyLabel.setText(String.format("Avg Energy: %.2f", stats.avgEnergy()));
-        avgLifeSpanLabel.setText(String.format("Avg Life: %.2f", stats.avgLifeSpan()));
-        avgChildrenLabel.setText(String.format("Avg Children: %.2f", stats.avgChildrenCount()));
+        animalCountLabel.setText("Number of living animals: " + stats.animalCount());
+        grassCountLabel.setText("Number of grasses: " + stats.grassCount());
+        emptySquaresLabel.setText("Number of empty squares: " + stats.emptySquares());
+        avgEnergyLabel.setText(String.format("Average energy value for living animals: %.2f", stats.avgEnergy()));
+        avgLifeSpanLabel.setText(String.format("Average life span: %.2f", stats.avgLifeSpan()));
+        avgChildrenLabel.setText(String.format("Average number of children for living animals: %.2f", stats.avgChildrenCount()));
         //popularGenotypeLabel.setText("Popular Genotype: " + stats.popularGenotype());
     }
 }
