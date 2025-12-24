@@ -109,9 +109,9 @@ public class Simulation implements Runnable {
         if (animals.isEmpty()) return null;
 
         Comparator<Animal> comparator = Comparator
-                .comparingInt(Animal::getEnergy)
-                .thenComparingInt(Animal::getDaysAlive)
-                .thenComparingInt(Animal::getNumberOfBreedings);
+                .comparingInt(Animal::getEnergy).reversed()
+                .thenComparingInt(Animal::getDaysAlive).reversed()
+                .thenComparingInt(Animal::getNumberOfBreedings).reversed();
 
         Animal bestAnimal = animals.stream().max(comparator).orElse(null);
 
