@@ -108,23 +108,22 @@ public class Simulation implements Runnable {
     public Animal idealAnimalToEatByQA(List<Animal> animals) {
         if (animals.isEmpty()) return null;
 
-        // .max() zwraca optionalint dlatego musze orelse
-        int maxEnergy = animals.stream().mapToInt(Animal::getEnergy).max().orElse(Integer.MIN_VALUE);
-        List<Animal> candidates = animals.stream()
-                .filter(animal -> animal.getEnergy() == maxEnergy)
-                .collect(Collectors.toList());
+        Comparator<Animal> comparator = Comparator
+                .comparingInt(Animal::getEnergy).reversed()
+                .thenComparingInt(Animal::getDaysAlive).reversed()
+                .thenComparingInt(Animal::getNumberOfBreedings).reversed();
 
-        int maxAge = candidates.stream().mapToInt(Animal::getDaysAlive).max().orElse(Integer.MIN_VALUE);
-        candidates = candidates.stream()
-                .filter(animal -> animal.getDaysAlive() == maxAge)
-                .collect(Collectors.toList());
+        Animal bestAnimal = animals.stream().max(comparator).orElse(null);
 
-        int maxChildren = candidates.stream().mapToInt(Animal::getNumberOfBreedings).max().orElse(Integer.MIN_VALUE);
-        candidates = candidates.stream()
-                .filter(animal -> animal.getNumberOfBreedings() == maxChildren)
-                .collect(Collectors.toList());
+        if (bestAnimal == null) {
+            return null;
+        }
 
-        return candidates.get(new Random().nextInt(candidates.size()));
+        List<Animal> allBestAnimals = animals.stream()
+                .filter(animal -> comparator.compare(animal, bestAnimal) == 0)
+                .toList();
+
+        return allBestAnimals.get(new Random().nextInt(allBestAnimals.size()));
     }
 
     public void procreate() {
