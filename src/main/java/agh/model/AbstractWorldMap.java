@@ -3,23 +3,46 @@ package agh.model;
 import agh.model.animal.Animal;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.MultiValueHashMap;
+import agh.model.util.RandomPositionGenerator;
 
 import java.util.*;
 
 public abstract class AbstractWorldMap {
+    protected final GrassGenerator grassGenerator = new GrassGenerator();
     private final MultiValueHashMap<Vector2d, Animal> animals = new MultiValueHashMap<>();
     private final HashMap<Vector2d, Grass> grasses = new HashMap<>();
-    private final Boundary boundary;
+    protected final Boundary mapBoundary;
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final ConsoleMapVisualizer cmv = new ConsoleMapVisualizer(this); // temp dla testów
     protected final int initNumGrass;
     private int emptySquares;
 
     public AbstractWorldMap(int width, int height, int numGrass) {
-        this.boundary = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
+        this.mapBoundary = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
         this.emptySquares = width * height;
         this.initNumGrass = numGrass;
     }
+
+    public void generateGrass(int numGrass) {
+        List<Vector2d> allJunglePositions = this.getPositionsWithoutGrass(this.getJunglePositions());
+        List<Vector2d> allNotJunglePositions = this.getPositionsWithoutGrass(mapBoundary.getAllPositions());
+        allNotJunglePositions.removeAll(allJunglePositions);
+        RandomPositionGenerator randomJunglePositions = grassGenerator.generateJungle(allJunglePositions, numGrass);
+        for (Vector2d position: randomJunglePositions) {
+            this.placeGrass(createJungleGrass(position));
+            numGrass--;
+        }
+        RandomPositionGenerator randomNotJunglePositions = grassGenerator.generateGrass(allNotJunglePositions, numGrass);
+        for (Vector2d position: randomNotJunglePositions) {
+            this.placeGrass(new Grass(position));
+        }
+    }
+
+    protected Grass createJungleGrass(Vector2d position) {
+        return new Grass(position);
+    }
+
+    protected abstract List<Vector2d> getJunglePositions();
 
     // to do - jak wolne miejsce to trza odjac emptySquare--
     public void placeAnimal(Animal animal) {
@@ -66,6 +89,11 @@ public abstract class AbstractWorldMap {
         mapChanged("Grass removed");
     }
 
+    public List<Vector2d> getPositionsWithoutGrass(List<Vector2d> allPositions) {
+        allPositions.removeAll(this.getGrassPositions());
+        return allPositions;
+    }
+
     public void moveAllAnimals() {
         // obejscie zeby nie zminiac listy po ktorej iterujemy
         List<Animal> allAnimals = new ArrayList<>();
@@ -106,15 +134,15 @@ public abstract class AbstractWorldMap {
     }
 
     public boolean inBounds(Vector2d position) {
-        return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
+        return position.follows(mapBoundary.lowerLeft()) && position.precedes(mapBoundary.upperRight());
     }
 
     public Vector2d wrapPosition(Vector2d position) {
         int x = position.getX();
         int y = position.getY();
 
-        int minY = boundary.lowerLeft().getY();
-        int maxY = boundary.upperRight().getY();
+        int minY = mapBoundary.lowerLeft().getY();
+        int maxY = mapBoundary.upperRight().getY();
         int width = getWidth();
 
         if (y < minY) y = minY;
@@ -176,15 +204,15 @@ public abstract class AbstractWorldMap {
     }
 
     public int getHeight() {
-        return boundary.upperRight().getY() + 1;
+        return mapBoundary.upperRight().getY() + 1;
     }
 
     public int getWidth() {
-        return boundary.upperRight().getX() + 1;
+        return mapBoundary.upperRight().getX() + 1;
     }
 
     public Boundary getMapBoundary() {
-        return new Boundary(boundary.lowerLeft(), boundary.upperRight());
+        return new Boundary(mapBoundary.lowerLeft(), mapBoundary.upperRight());
     }
 
     public void addObserver(MapChangeListener observer) {

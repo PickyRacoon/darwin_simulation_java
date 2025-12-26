@@ -100,7 +100,10 @@ public class Simulation implements Runnable {
 
             if (eater != null) {
                 eater.eat(config.grassEnergy());
-                worldMap.removeGrass(grass);
+                grass.eat();
+                if (grass.isEaten()) {
+                    worldMap.removeGrass(grass);
+                }
             }
         }
     }
@@ -154,8 +157,7 @@ public class Simulation implements Runnable {
     }
 
     public void growNewPlants(int numOfNewGrasses) {
-        GrassGenerator grassGenerator = new GrassGenerator();
-        grassGenerator.placeNewGrass(worldMap, numOfNewGrasses);
+        worldMap.generateGrass(numOfNewGrasses);
     }
 
     public SimulationStatistics getSimulationStatistics() {

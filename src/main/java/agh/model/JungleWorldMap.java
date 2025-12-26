@@ -1,9 +1,5 @@
 package agh.model;
 
-import agh.model.animal.Animal;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class JungleWorldMap extends AbstractWorldMap{
@@ -13,7 +9,6 @@ public class JungleWorldMap extends AbstractWorldMap{
         super(width, height, numGrass);
         this.jungle = createJungle();
         generateGrass(numGrass);
-
     }
 
     private Boundary createJungle() {
@@ -23,9 +18,9 @@ public class JungleWorldMap extends AbstractWorldMap{
         return new Boundary(new Vector2d(0, jungleStart), new Vector2d(getWidth() - 1, jungleEnd));
     }
 
-    private void generateGrass(int numGrass) {
-        GrassGenerator grassGenerator = new GrassGenerator();
-        grassGenerator.createJungle(this, numGrass);
+    @Override
+    protected List<Vector2d> getJunglePositions() {
+        return jungle.getAllPositions();
     }
 
     public Boundary getJungleBoundary() {
