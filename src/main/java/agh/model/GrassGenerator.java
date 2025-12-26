@@ -1,10 +1,7 @@
 package agh.model;
 
 import agh.model.util.RandomPositionGenerator;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class GrassGenerator {
     public RandomPositionGenerator generateGrass(List<Vector2d> allPossiblePositions, int numGrass) {

@@ -90,8 +90,9 @@ public abstract class AbstractWorldMap {
     }
 
     public List<Vector2d> getPositionsWithoutGrass(List<Vector2d> allPositions) {
-        allPositions.removeAll(this.getGrassPositions());
-        return allPositions;
+        ArrayList<Vector2d> positions = new ArrayList<>(allPositions);
+        positions.removeAll(this.getGrassPositions());
+        return positions;
     }
 
     public void moveAllAnimals() {

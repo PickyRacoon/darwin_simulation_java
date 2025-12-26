@@ -2,10 +2,11 @@ package agh.model;
 
 public class Grass implements WorldElement {
     private final Vector2d position;
-    private int numMeals = 1;
+    protected int numMeals;
 
     public Grass(Vector2d position) {
         this.position = position;
+        this.numMeals = 1;
     }
 
     @Override
