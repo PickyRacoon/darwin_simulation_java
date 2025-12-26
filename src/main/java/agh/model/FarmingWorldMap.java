@@ -2,6 +2,7 @@ package agh.model;
 
 import agh.model.animal.Animal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +20,9 @@ public class FarmingWorldMap extends AbstractWorldMap {
 
     @Override
     public void generateGrass(int numGrass) {
-        for (Vector2d position : fertileLand.keySet()) {
+        List<Vector2d> fertilePositions = new ArrayList<>(fertileLand.keySet());
+
+        for (Vector2d position : fertilePositions) {
             int daysFertile = fertileLand.get(position);
             if (daysFertile < 1) {
                 fertileLand.remove(position);

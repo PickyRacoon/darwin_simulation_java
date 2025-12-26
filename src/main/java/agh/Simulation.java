@@ -32,11 +32,12 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        while (!isStopped) {
+        while (!isStopped && !Thread.currentThread().isInterrupted()) {
             try {
-                Thread.sleep(500);
+                Thread.currentThread().sleep(500);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
+                break;
             }
             deleteDeadAnimals();
             moveAnimals();
