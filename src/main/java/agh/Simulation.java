@@ -6,6 +6,8 @@ import agh.model.animal.Genotype;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.RandomPositionGenerator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,10 +18,12 @@ public class Simulation implements Runnable {
 //    private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
     private final List<Animal> allDeadAnimals = new ArrayList<>();
     private int daysCount = 0;
+    private final CSVLogger csvLogger;
 
-    public Simulation(SimulationConfig config) {
+    public Simulation(SimulationConfig config, CSVLogger csvLogger) {
         this.config = config;
         this.worldMap = config.worldMap();
+        this.csvLogger = csvLogger;
         this.initWorld();
     }
 
@@ -33,20 +37,29 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        while (!isStopped && !Thread.currentThread().isInterrupted()) {
-            try {
-                Thread.currentThread().sleep(500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+            while (!isStopped && !Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.currentThread().sleep(500);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+                deleteDeadAnimals();
+                moveAnimals();
+                eat();
+                procreate();
+                growNewPlants(config.numDailyGrass());
+                daysCount++;
+
+                if (csvLogger != null) {
+                    SimulationStatistics stats = getSimulationStatistics();
+                    String popularGenotypeString = stats.popularGenotype().stream()
+                            .map(Object::toString)
+                            .collect(Collectors.joining(""));
+                    csvLogger.logDay(daysCount, stats.animalCount(), stats.grassCount(), stats.emptySquares(),
+                            stats.avgEnergy(), stats.avgLifeSpan(), stats.avgChildrenCount(), popularGenotypeString);
+                }
             }
-            deleteDeadAnimals();
-            moveAnimals();
-            eat();
-            procreate();
-            growNewPlants(config.numDailyGrass());
-            daysCount++;
-        }
     }
 
     public void stopSimulation() {
@@ -67,11 +80,14 @@ public class Simulation implements Runnable {
                 .filter(animal -> !animal.isAlive())
                 .toList(); // aby nie modyfikować mapy w trakcie iteracji
 
+    synchronized (allDeadAnimals) {
         for (Animal animal : deadAnimals) {
             allDeadAnimals.add(animal);
             animal.setDiedOnDay(daysCount);
             worldMap.removeAnimal(animal);
         }
+    }
+
     }
 
     public void moveAnimals() {

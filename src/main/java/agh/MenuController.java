@@ -15,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class MenuController {
     private Spinner<Integer> fertileLandValue;
 
     private Stage stage;
+    private CSVLogger csvLogger;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -89,6 +91,16 @@ public class MenuController {
 
         SimulationPresenter presenter = loader.getController();
         presenter.setStage(simulationStage);
+
+        File folder = new File("sim_logs");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        String fileName = "simulation_" + System.currentTimeMillis() + ".csv";
+        File file = new File(folder, fileName);
+
+        csvLogger = new CSVLogger(file);
 
         FarmingStatistics farmingStatistics = null;
         if (simulationVariation.isSelected()) {
@@ -122,10 +134,13 @@ public class MenuController {
                 genotypeLen.getValue()
         );
 
-        presenter.createSimulation(config);
+        presenter.createSimulation(config, csvLogger);
 
         simulationStage.setOnCloseRequest(event -> {
             presenter.stopSimulation();
+            if (csvLogger != null) {
+                csvLogger.close();
+            }
             System.out.println("Simulation closed");
         });
 
