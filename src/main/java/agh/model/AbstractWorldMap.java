@@ -95,7 +95,7 @@ public abstract class AbstractWorldMap {
         return positions;
     }
 
-    public void moveAllAnimals() {
+    public synchronized void moveAllAnimals() {
         // obejscie zeby nie zminiac listy po ktorej iterujemy
         List<Animal> allAnimals = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package agh.model.presenter;
 
+import agh.CSVLogger;
 import agh.Simulation;
 import agh.SimulationConfig;
 import agh.SimulationStatistics;
@@ -87,10 +88,10 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
         });
     }
 
-    public void createSimulation(SimulationConfig config) {
+    public void createSimulation(SimulationConfig config, CSVLogger csvLogger) {
         this.worldMap = config.worldMap();
         this.worldMap.addObserver(this);
-        this.simulation = new Simulation(config);
+        this.simulation = new Simulation(config, csvLogger);
         drawMap();
         executorService.submit(simulation);
         simulationFuture = executorService.submit(simulation);
