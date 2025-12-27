@@ -8,6 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
@@ -19,64 +20,88 @@
         </VBox>
     </top>
     <center>
-        <VBox styleClass="content-box">
-            <HBox styleClass="input-row">
-                <Spinner fx:id="mapWidth" initialValue="10" max="100" editable="true"/>
-                <Label styleClass="input-label">Map width</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="mapHeight" initialValue="10" max="100" editable="true"/>
-                <Label styleClass="input-label">Map height</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="numAnimals" initialValue="10" max="100" editable="true"/>
-                <Label styleClass="input-label">Number of Animals</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="numGrass" initialValue="10" max="100" editable="true"/>
-                <Label styleClass="input-label">Number of plants</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="grassEnergy" initialValue="10" max="100" editable="true"/>
-                <Label styleClass="input-label">Energy from eating plants</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="numDailyGrass" initialValue="5" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Number of plants growing daily</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="animalStartEnergy" initialValue="100" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Starting animal energy</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="animalLooseEnergy" initialValue="10" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Energy lost daily</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="animalMinBreedEnergy" initialValue="78" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Minimal breeding energy</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="animalEnergyUsedToBreed" initialValue="22" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Energy used to breed</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="minNumMutations" initialValue="1" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Minimal number of mutation</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="maxNumMutations" initialValue="5" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Maximum number of mutation</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <Spinner fx:id="genotypeLen" initialValue="10" min="0" max="100" editable="true"/>
-                <Label styleClass="input-label">Genotype length</Label>
-            </HBox>
-            <HBox styleClass="input-row">
-                <CheckBox fx:id="simulationVariation"/>
-                <Label styleClass="input-label">Simulation "Cultivating the land"</Label>
-            </HBox>
-        </VBox>
+        <ScrollPane fitToWidth="true">
+                <content>
+                <VBox>
+                    <VBox styleClass="content-box">
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="mapWidth" initialValue="10" max="100" editable="true"/>
+                            <Label styleClass="input-label">Map width</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="mapHeight" initialValue="10" max="100" editable="true"/>
+                            <Label styleClass="input-label">Map height</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="numAnimals" initialValue="10" max="100" editable="true"/>
+                            <Label styleClass="input-label">Number of Animals</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="numGrass" initialValue="10" max="100" editable="true"/>
+                            <Label styleClass="input-label">Number of plants</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="grassEnergy" initialValue="10" max="100" editable="true"/>
+                            <Label styleClass="input-label">Energy from eating plants</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="numDailyGrass" initialValue="5" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Number of plants growing daily</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="animalStartEnergy" initialValue="100" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Starting animal energy</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="animalLooseEnergy" initialValue="10" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Energy lost daily</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="animalMinBreedEnergy" initialValue="78" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Minimal breeding energy</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="animalEnergyUsedToBreed" initialValue="22" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Energy used to breed</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="minNumMutations" initialValue="1" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Minimal number of mutation</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="maxNumMutations" initialValue="5" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Maximum number of mutation</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="genotypeLen" initialValue="10" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Genotype length</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <CheckBox fx:id="simulationVariation" onAction="#onCultivatingToggle"/>
+                            <Label styleClass="input-label">Simulation "Cultivating the land"</Label>
+                        </HBox>
+                    </VBox>
+                    <VBox fx:id="farmingBox" styleClass="content-box2" visible="false" managed="false">
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="minEnergyToCultivate" initialValue="10" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Min energy to cultivate</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="daysLandIsFertile" initialValue="5" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Days land is fertile</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="numMeals" initialValue="3" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Meals from one uniq grass</Label>
+                        </HBox>
+                        <HBox styleClass="input-row">
+                            <Spinner fx:id="fertileLandValue" initialValue="3" min="0" max="100" editable="true"/>
+                            <Label styleClass="input-label">Min animals to land to be fertile</Label>
+                        </HBox>
+                    </VBox>
+                </VBox>
+                </content>
+        </ScrollPane>
     </center>
     <bottom>
         <VBox alignment="CENTER" spacing="10" styleClass="footer-box">

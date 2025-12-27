@@ -24,6 +24,13 @@
     -fx-spacing: 15;
 }
 
+/* Sekcja środkowa */
+.content-box2 {
+    -fx-alignment: top-left;
+    -fx-padding: 10 30 10 30;
+    -fx-spacing: 15;
+}
+
 .input-row {
     -fx-alignment: center-left;
     -fx-spacing: 10;

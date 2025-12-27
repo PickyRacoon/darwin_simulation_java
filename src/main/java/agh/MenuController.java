@@ -9,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -46,9 +48,18 @@ public class MenuController {
     private Spinner<Integer> numAnimals;
     @FXML
     private Spinner<Integer> numGrass;
+    @FXML
+    private VBox farmingBox;
+    @FXML
+    private Spinner<Integer> minEnergyToCultivate;
+    @FXML
+    private Spinner<Integer> daysLandIsFertile;
+    @FXML
+    private Spinner<Integer> numMeals;
+    @FXML
+    private Spinner<Integer> fertileLandValue;
 
     private Stage stage;
-
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -58,6 +69,13 @@ public class MenuController {
             Platform.exit();       // konczy cale gui
             System.exit(0);     // konczy jvm
         });
+    }
+
+    @FXML
+    private void onCultivatingToggle() {
+        boolean enabled = simulationVariation.isSelected();
+        farmingBox.setVisible(enabled);
+        farmingBox.setManaged(enabled);
     }
 
     @FXML
@@ -72,11 +90,21 @@ public class MenuController {
         SimulationPresenter presenter = loader.getController();
         presenter.setStage(simulationStage);
 
+        FarmingStatistics farmingStatistics = null;
+        if (simulationVariation.isSelected()) {
+            farmingStatistics = new FarmingStatistics(
+                    minEnergyToCultivate.getValue(),
+                    daysLandIsFertile.getValue(),
+                    numMeals.getValue(),
+                    fertileLandValue.getValue()
+            );
+        }
+
         AbstractWorldMap worldMap;
         if (!simulationVariation.isSelected()) {
             worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue());
         } else {
-            worldMap = new FarmingWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue());
+            worldMap = new FarmingWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue(), farmingStatistics);
         }
 
         SimulationConfig config = new SimulationConfig(
