@@ -76,6 +76,8 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
     private Simulation simulation;
     private AbstractWorldMap worldMap;
     private Animal currentlyWatchedAnimal;
+    private Vector2d lastClickedPosition = null;
+    private int currentAnimalIndex = 0;
 
     @Override
     public void mapChanged(AbstractWorldMap map, String message) {
@@ -116,15 +118,20 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
             Vector2d positionClicked = canvasXYtoVector(event.getX(), event.getY());
             if (worldMap.isAnimalAt(positionClicked)) {
                 List<Animal> animals = worldMap.getAnimalsAt(positionClicked);
-                if (animals.size() == 1) { // TODO dla kilku zwierząt na jednej pozycji
-                    Animal animal = animals.getFirst();
-                    animal.addObserver(this);
-                    if (currentlyWatchedAnimal != null ){
-                        currentlyWatchedAnimal.removeObserver(this);
-                    }
-                    currentlyWatchedAnimal = animal;
-
+                if (positionClicked.equals(lastClickedPosition)) {
+                    currentAnimalIndex = (currentAnimalIndex + 1) % animals.size();
+                } else {
+                    currentAnimalIndex = 0;
+                    lastClickedPosition = positionClicked;
                 }
+                Animal animal = animals.get(currentAnimalIndex);
+
+                if (currentlyWatchedAnimal != null) {
+                    currentlyWatchedAnimal.removeObserver(this);
+                }
+                
+                animal.addObserver(this);
+                currentlyWatchedAnimal = animal;
             }
         });
     }
