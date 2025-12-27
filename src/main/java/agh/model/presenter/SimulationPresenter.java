@@ -20,6 +20,7 @@ import javafx.scene.control.Button;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SimulationPresenter implements MapChangeListener {
     private static final int MAX_CANVAS_WIDTH = 500;
@@ -53,6 +54,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     private double cellSize;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Future<?> simulationFuture;
     private Simulation simulation;
     private AbstractWorldMap worldMap;
 
@@ -71,15 +73,22 @@ public class SimulationPresenter implements MapChangeListener {
         this.simulation = new Simulation(config);
         drawMap();
         executorService.submit(simulation);
+        simulationFuture = executorService.submit(simulation);
     }
 
     public void stopSimulation() {
         simulation.stopSimulation();
+        if (simulationFuture != null && !simulationFuture.isDone()) {
+            simulationFuture.cancel(true);
+        }
     }
 
     public void startSimulation() {
         simulation.startSimulation();
         executorService.submit(simulation);
+        if (simulationFuture == null || simulationFuture.isDone()) {
+            simulationFuture = executorService.submit(simulation);
+        }
     }
 
     public void drawMap() {
@@ -118,9 +127,9 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private String parseWorldElementToString(Vector2d position, GraphicsContext graphics) {
-        if (worldMap.isAnimalAt(position)) {
+        List<Animal> animals = worldMap.getAnimalsAt(position);
+        if (!animals.isEmpty()) {
             configureFont(graphics, (int) cellSize/4, Color.BLACK);
-            List<Animal> animals = worldMap.getAnimalsAt(position);
             if (animals.size() > 1) {
                 return animals.getFirst().toString() + "\n" + animals.getFirst().toString();
             } else {return animals.getFirst().toString();}

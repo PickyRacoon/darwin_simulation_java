@@ -1,6 +1,7 @@
 package agh;
 
 import agh.model.AbstractWorldMap;
+import agh.model.FarmingWorldMap;
 import agh.model.JungleWorldMap;
 import agh.model.presenter.SimulationPresenter;
 import javafx.application.Platform;
@@ -75,7 +76,7 @@ public class MenuController {
         if (!simulationVariation.isSelected()) {
             worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue());
         } else {
-            worldMap = new JungleWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue()); // tutaj będzie druga mapa
+            worldMap = new FarmingWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue());
         }
 
         SimulationConfig config = new SimulationConfig(

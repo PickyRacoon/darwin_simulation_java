@@ -32,11 +32,12 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        while (!isStopped) {
+        while (!isStopped && !Thread.currentThread().isInterrupted()) {
             try {
-                Thread.sleep(500);
+                Thread.currentThread().sleep(500);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
+                break;
             }
             deleteDeadAnimals();
             moveAnimals();
@@ -100,7 +101,10 @@ public class Simulation implements Runnable {
 
             if (eater != null) {
                 eater.eat(config.grassEnergy());
-                worldMap.removeGrass(grass);
+                grass.eat();
+                if (grass.isEaten()) {
+                    worldMap.removeGrass(grass);
+                }
             }
         }
     }
@@ -154,8 +158,7 @@ public class Simulation implements Runnable {
     }
 
     public void growNewPlants(int numOfNewGrasses) {
-        GrassGenerator grassGenerator = new GrassGenerator();
-        grassGenerator.placeNewGrass(worldMap, numOfNewGrasses);
+        worldMap.generateGrass(numOfNewGrasses);
     }
 
     public SimulationStatistics getSimulationStatistics() {
