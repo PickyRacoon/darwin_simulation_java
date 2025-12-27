@@ -13,8 +13,9 @@ public class Simulation implements Runnable {
     private final SimulationConfig config;
     private final AbstractWorldMap worldMap;
     private boolean isStopped = false;
-    //private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
+//    private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
     private final List<Animal> allDeadAnimals = new ArrayList<>();
+    private int daysCount = 0;
 
     public Simulation(SimulationConfig config) {
         this.config = config;
@@ -44,6 +45,7 @@ public class Simulation implements Runnable {
             eat();
             procreate();
             growNewPlants(config.numDailyGrass());
+            daysCount++;
         }
     }
 
@@ -56,7 +58,7 @@ public class Simulation implements Runnable {
     }
 
     public void initWorld() {
-        // worldMap.addObserver(consoleDisplay); // potrzebne tylko do testów w konsoli
+        //worldMap.addObserver(consoleDisplay); // potrzebne tylko do testów w konsoli
         placeAnimals(config.numAnimals());
     }
 
@@ -67,6 +69,7 @@ public class Simulation implements Runnable {
 
         for (Animal animal : deadAnimals) {
             allDeadAnimals.add(animal);
+            animal.setDiedOnDay(daysCount);
             worldMap.removeAnimal(animal);
         }
     }
@@ -83,6 +86,7 @@ public class Simulation implements Runnable {
             animal.setPosition(newPos);
 
             worldMap.placeAnimal(animal);
+            animal.incrementDaysSurvived();
         }
     }
 
@@ -148,7 +152,7 @@ public class Simulation implements Runnable {
             Animal parent2 = parents.get(1);
 
             Genotype childGenotype = Genotype.crossGenotype(parent1, parent2, config);
-            Animal child = new Animal(position, childGenotype, config);
+            Animal child = new Animal(position, childGenotype, parent1, parent2, config);
 
             parent1.breed();
             parent2.breed();

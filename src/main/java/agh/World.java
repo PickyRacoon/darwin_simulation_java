@@ -1,6 +1,7 @@
 package agh;
 
 
+import agh.model.presenter.SimulationPresenter;
 import javafx.application.Application;
 
 public class World {
@@ -11,6 +12,6 @@ public class World {
 //            simulation.run();
 //        }
 
-        Application.launch(SimulationApp.class, args);
+       Application.launch(SimulationApp.class, args);
     }
 }
