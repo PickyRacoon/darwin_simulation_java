@@ -57,6 +57,7 @@ public class Animal implements WorldElement {
         energy -= config.animalLooseEnergy();
         daysAlive += 1;
         if (energy <= 0) {
+            energy = 0
             die();
         }
         genotype.nextGenomIndex();
