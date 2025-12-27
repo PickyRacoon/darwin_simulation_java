@@ -28,17 +28,33 @@
         </VBox>
     </bottom>
     <right>
-        <VBox fx:id="statsBox" spacing="5" alignment="TOP_LEFT">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <Label fx:id="animalCountLabel" text="Animals: 0"/>
-            <Label fx:id="grassCountLabel" text="Grass: 0"/>
-            <Label fx:id="emptySquaresLabel" text="Empty Squares: 0"/>
-            <Label fx:id="avgEnergyLabel" text="Avg Energy: 0.0"/>
-            <Label fx:id="avgLifeSpanLabel" text="Avg Life: 0.0"/>
-            <Label fx:id="avgChildrenLabel" text="Avg Children: 0.0"/>
-            <Label fx:id="popularGenotypeLabel" text="Popular Genotype: none"/>
+        <VBox>
+            <VBox fx:id="statsBox" spacing="5" alignment="TOP_LEFT">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label fx:id="animalCountLabel" text="Animals: 0"/>
+                <Label fx:id="grassCountLabel" text="Grass: 0"/>
+                <Label fx:id="emptySquaresLabel" text="Empty Squares: 0"/>
+                <Label fx:id="avgEnergyLabel" text="Avg Energy: 0.0"/>
+                <Label fx:id="avgLifeSpanLabel" text="Avg Life: 0.0"/>
+                <Label fx:id="avgChildrenLabel" text="Avg Children: 0.0"/>
+                <Label fx:id="popularGenotypeLabel" text="Popular Genotype: none"/>
+            </VBox>
+            <VBox fx:id="animalStatsBox" spacing="5" alignment="BOTTOM_LEFT">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Animal Status:"/>
+                <Label fx:id="animalGenome" text="Genome:"/>
+                <Label fx:id="activeGenomeIndex" text="Genome index:"/>
+                <Label fx:id="animalEnergy" text="Energy:"/>
+                <Label fx:id="numPlantEaten" text="Number of plants eaten:"/>
+                <Label fx:id="numKids" text="Number of kids:"/>
+                <Label fx:id="numDescendants" text="Number of grandchildren:"/>
+                <Label fx:id="daysSurvied" text="Days survived:"/>
+                <Label fx:id="diedOn" text="Died on:"/>
+            </VBox>
         </VBox>
     </right>
 </BorderPane>

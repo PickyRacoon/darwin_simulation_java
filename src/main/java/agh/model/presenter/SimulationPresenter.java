@@ -5,6 +5,7 @@ import agh.SimulationConfig;
 import agh.SimulationStatistics;
 import agh.model.*;
 import agh.model.animal.Animal;
+import agh.model.animal.AnimalStatus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.VPos;
@@ -22,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class SimulationPresenter implements MapChangeListener {
+public class SimulationPresenter implements MapChangeListener, AnimalChangeListener {
     private static final int MAX_CANVAS_WIDTH = 500;
     private static final int MAX_CANVAS_HEIGHT = 500;
     private static final int MIN_CELL_WIDTH = 15;
@@ -51,13 +52,32 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Label popularGenotypeLabel;
 
+    // Staty zwierzaka
+    @FXML
+    private Label animalGenome;
+    @FXML
+    private Label activeGenomeIndex;
+    @FXML
+    private Label animalEnergy;
+    @FXML
+    private Label numPlantEaten;
+    @FXML
+    private Label numKids;
+    @FXML
+    private Label numDescendants;
+    @FXML
+    private Label daysSurvied;
+    @FXML
+    private Label diedOn;
 
     private double cellSize;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Future<?> simulationFuture;
     private Simulation simulation;
     private AbstractWorldMap worldMap;
-
+    private Animal currentlyWatchedAnimal;
+    private Vector2d lastClickedPosition = null;
+    private int currentAnimalIndex = 0;
 
     @Override
     public void mapChanged(AbstractWorldMap map, String message) {
@@ -81,6 +101,7 @@ public class SimulationPresenter implements MapChangeListener {
         if (simulationFuture != null && !simulationFuture.isDone()) {
             simulationFuture.cancel(true);
         }
+        seeAnimalStats();
     }
 
     public void startSimulation() {
@@ -89,6 +110,38 @@ public class SimulationPresenter implements MapChangeListener {
         if (simulationFuture == null || simulationFuture.isDone()) {
             simulationFuture = executorService.submit(simulation);
         }
+        turnOffAnimalStats();
+    }
+
+    public void seeAnimalStats() {
+        mapCanvas.setOnMouseClicked(event -> {
+            Vector2d positionClicked = canvasXYtoVector(event.getX(), event.getY());
+            if (worldMap.isAnimalAt(positionClicked)) {
+                List<Animal> animals = worldMap.getAnimalsAt(positionClicked);
+                if (positionClicked.equals(lastClickedPosition)) {
+                    currentAnimalIndex = (currentAnimalIndex + 1) % animals.size();
+                } else {
+                    currentAnimalIndex = 0;
+                    lastClickedPosition = positionClicked;
+                }
+                Animal animal = animals.get(currentAnimalIndex);
+
+                if (currentlyWatchedAnimal != null) {
+                    currentlyWatchedAnimal.removeObserver(this);
+                }
+                
+                animal.addObserver(this);
+                currentlyWatchedAnimal = animal;
+            }
+        });
+    }
+
+    private void turnOffAnimalStats() {
+        mapCanvas.setOnMouseClicked(null);
+    }
+
+    public Vector2d canvasXYtoVector(double x, double y) {
+        return new Vector2d((int) ((x + cellSize) / cellSize - 2), (int) (-1 * (y - mapCanvas.getHeight()) / cellSize));
     }
 
     public void drawMap() {
@@ -96,9 +149,9 @@ public class SimulationPresenter implements MapChangeListener {
         Vector2d mapUR = bounds.upperRight();
         Vector2d mapLL = bounds.lowerLeft();
         if (mapUR.getY() > mapUR.getX()) {
-            cellSize = (double) MAX_CANVAS_HEIGHT / (mapUR.getY()+2);
+            cellSize = (double) MAX_CANVAS_HEIGHT / (mapUR.getY() + 2);
         } else {
-            cellSize = (double) MAX_CANVAS_WIDTH / (mapUR.getX()+2);
+            cellSize = (double) MAX_CANVAS_WIDTH / (mapUR.getX() + 2);
         }
 
         mapCanvas.setHeight(cellSize * (mapUR.getY() + 2));
@@ -129,13 +182,13 @@ public class SimulationPresenter implements MapChangeListener {
     private String parseWorldElementToString(Vector2d position, GraphicsContext graphics) {
         List<Animal> animals = worldMap.getAnimalsAt(position);
         if (!animals.isEmpty()) {
-            configureFont(graphics, (int) cellSize/4, Color.BLACK);
+            configureFont(graphics, (int) cellSize / 4, Color.BLACK);
             if (animals.size() > 1) {
                 return animals.getFirst().toString() + "\n" + animals.getFirst().toString();
             } else {return animals.getFirst().toString();}
         }
         if (worldMap.isGrassAt(position)) {
-            configureFont(graphics, (int) cellSize/2, Color.GREEN);
+            configureFont(graphics, (int) cellSize / 2, Color.GREEN);
             return worldMap.getGrassAt(position).toString();
         }
         return null;
@@ -193,5 +246,19 @@ public class SimulationPresenter implements MapChangeListener {
         avgLifeSpanLabel.setText(String.format("Average life span: %.2f", stats.avgLifeSpan()));
         avgChildrenLabel.setText(String.format("Average number of children for living animals: %.2f", stats.avgChildrenCount()));
         popularGenotypeLabel.setText("The most popular genotype: " + stats.popularGenotype());
+    }
+
+    @Override
+    public void animalChanged(AnimalStatus animalStatus) {
+        Platform.runLater(() -> {
+        animalGenome.setText("Genome: " + animalStatus.genom().toString());
+        activeGenomeIndex.setText("Genome index: " + animalStatus.activeGenomIndex());
+        animalEnergy.setText("Energy: " + animalStatus.energy());
+        numPlantEaten.setText("Number of plants eaten: " + animalStatus.numPlantsEaten());
+        numKids.setText("Number of kids: " + animalStatus.numKids());
+        numDescendants.setText("Number of grandchildren: " + animalStatus.numDescendants());
+        daysSurvied.setText("Days Survived: " + animalStatus.daysSurvived());
+        diedOn.setText("Died on: " + animalStatus.diedOnDay());
+        });
     }
 }
