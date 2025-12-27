@@ -1,5 +1,6 @@
 package agh.model;
 
+import agh.FarmingStatistics;
 import agh.model.animal.Animal;
 
 import java.util.ArrayList;
@@ -9,12 +10,17 @@ import java.util.List;
 public class FarmingWorldMap extends AbstractWorldMap {
     private final HashMap<Vector2d, Integer> landBeingCultivated = new HashMap<>();
     private final HashMap<Vector2d, Integer> fertileLand = new HashMap<>();
-    private final int fertileLandValue = 3;
-    private int minEnergyToCultivate = 20; // param
-    private int daysLandIsFertile = 5; // param
+    private final FarmingStatistics farmingStatistics;
+    private final int fertileLandValue;
+    private final int minEnergyToCultivate;
+    private final int daysLandIsFertile;
 
-    public FarmingWorldMap(int width, int height, int numGrass) {
+    public FarmingWorldMap(int width, int height, int numGrass, FarmingStatistics farmingStatistics) {
         super(width, height, numGrass);
+        this.farmingStatistics = farmingStatistics;
+        this.fertileLandValue = farmingStatistics.fertileLandValue();
+        this.minEnergyToCultivate = farmingStatistics.minEnergyToCultivate();
+        this.daysLandIsFertile = farmingStatistics.daysLandIsFertile();
         generateGrass(numGrass);
     }
 
@@ -35,7 +41,7 @@ public class FarmingWorldMap extends AbstractWorldMap {
 
     @Override
     protected Grass createJungleGrass(Vector2d position) {
-        return new BigGrass(position);
+        return new BigGrass(position, farmingStatistics.numMeals());
     }
 
     @Override
@@ -52,7 +58,7 @@ public class FarmingWorldMap extends AbstractWorldMap {
         } else {
             landBeingCultivated.put(position, landBeingCultivated.get(position) + 1);
         }
-        if (landBeingCultivated.get(position) > fertileLandValue) {
+        if (landBeingCultivated.get(position) >= fertileLandValue) {
             fertileLand.put(position, daysLandIsFertile);
             landBeingCultivated.remove(position);
         }

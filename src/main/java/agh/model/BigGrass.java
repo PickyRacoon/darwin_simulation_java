@@ -1,9 +1,9 @@
 package agh.model;
 
 public class BigGrass extends Grass {
-    public BigGrass(Vector2d position) {
+    public BigGrass(Vector2d position, int numMeals) {
         super(position);
-        this.numMeals = 5;
+        this.numMeals = numMeals;
     }
 
     @Override
