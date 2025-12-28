@@ -10,6 +10,7 @@ public class CSVLogger implements AutoCloseable{
     private boolean headerWritten =  false;
 
     public CSVLogger(File file) throws IOException {
+        // czy na pewno wszytko istnieje
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }

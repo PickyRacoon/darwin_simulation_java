@@ -1,3 +1,4 @@
+import agh.CSVLogger;
 import agh.Simulation;
 import agh.SimulationConfig;
 import agh.model.AbstractWorldMap;
