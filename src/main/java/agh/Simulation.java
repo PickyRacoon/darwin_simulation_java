@@ -20,6 +20,11 @@ public class Simulation implements Runnable {
     private int daysCount = 0;
     private final CSVLogger csvLogger;
 
+    // do testow
+    public Simulation(SimulationConfig config) {
+        this(config, null);
+    }
+
     public Simulation(SimulationConfig config, CSVLogger csvLogger) {
         this.config = config;
         this.worldMap = config.worldMap();

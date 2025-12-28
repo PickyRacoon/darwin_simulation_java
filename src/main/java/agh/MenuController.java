@@ -99,7 +99,6 @@ public class MenuController {
 
         String fileName = "simulation_" + System.currentTimeMillis() + ".csv";
         File file = new File(folder, fileName);
-
         csvLogger = new CSVLogger(file);
 
         FarmingStatistics farmingStatistics = null;
