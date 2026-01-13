@@ -1,0 +1,5 @@
+Day;Animals;Grasses;EmptySquares;AvgEnergy;AvgLifeSpan;AvgChildren;MostPopularGenotype
+1;10;15;75;90,00;0,00;0,00;11
+2;11;19;75;73,64;0,00;0,18;11
+3;11;23;70;66,36;0,00;0,18;11
+4;11;27;66;59,09;0,00;0,18;11

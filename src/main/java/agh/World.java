@@ -4,7 +4,7 @@ package agh;
 import agh.model.presenter.SimulationPresenter;
 import javafx.application.Application;
 
-public class                                World {
+public class World {
 
     public static void main(String[] args) {
 //        Simulation simulation = new Simulation(10, 10, 2, 0);

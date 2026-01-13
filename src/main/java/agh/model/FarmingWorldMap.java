@@ -45,7 +45,7 @@ public class FarmingWorldMap extends AbstractWorldMap {
     }
 
     @Override
-    protected List<Vector2d> getJunglePositions() {
+    public List<Vector2d> getJunglePositions() {
         return this.fertileLand.keySet().stream().toList();
     }
 

@@ -161,7 +161,7 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
         double canvasWidth = mapCanvas.getWidth();
         GraphicsContext graphics = mapCanvas.getGraphicsContext2D();
         clearGrid();
-
+        drawSpecialFields(graphics, canvasHeight);
         drawLines(graphics, canvasWidth, canvasHeight);
         drawMapIndex(mapLL, mapUR, graphics, canvasHeight);
         drawWorldElements(mapLL, mapUR, graphics, canvasHeight);
@@ -180,13 +180,23 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
         }
     }
 
+    private boolean isMostPopularGenotype(Animal animal) {
+        SimulationStatistics stats = simulation.getSimulationStatistics();
+        return animal.getGenotype().getGenom().equals(stats.popularGenotype());
+    }
+
     private String parseWorldElementToString(Vector2d position, GraphicsContext graphics) {
         List<Animal> animals = worldMap.getAnimalsAt(position);
         if (!animals.isEmpty()) {
-            configureFont(graphics, (int) cellSize / 4, Color.BLACK);
+            Animal animal = animals.getFirst();
+            if (isMostPopularGenotype(animal)) {
+                configureFont(graphics, (int) cellSize / 4, Color.RED);
+            } else {
+                configureFont(graphics, (int) cellSize / 4, Color.BLACK);
+            }
             if (animals.size() > 1) {
-                return animals.getFirst().toString() + "\n" + animals.getFirst().toString();
-            } else {return animals.getFirst().toString();}
+                return animal.toString() + "\n" + animal.toString();
+            } else {return animal.toString();}
         }
         if (worldMap.isGrassAt(position)) {
             configureFont(graphics, (int) cellSize / 2, Color.GREEN);
@@ -204,6 +214,26 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
             graphics.strokeText(String.valueOf(x), cellSize * 1.5 + x * cellSize, cellSize / 2);
         }
         graphics.strokeText("y/x", cellSize / 2, cellSize / 2);
+    }
+
+    private void drawSpecialFields(GraphicsContext graphics, double canvasHeight) {
+        if (worldMap instanceof JungleWorldMap jungleWorldMap) {
+            for (Vector2d pos : jungleWorldMap.getJungleBoundary().getAllPositions()) {
+                double x = (pos.getX() + 1) * cellSize;
+                double y = canvasHeight - pos.getY() * cellSize - cellSize;
+
+                graphics.setFill(Color.LIGHTGREEN);
+                graphics.fillRect(x, y, cellSize, cellSize);
+            }
+        } else if (worldMap instanceof FarmingWorldMap farmingWorldMap) {
+            for (Vector2d pos : farmingWorldMap.getJunglePositions()) {
+                double x = (pos.getX() + 1) * cellSize;
+                double y = canvasHeight - pos.getY() * cellSize - cellSize;
+
+                graphics.setFill(Color.LIGHTGREEN);
+                graphics.fillRect(x, y, cellSize, cellSize);
+            }
+        }
     }
 
     private void drawLines(GraphicsContext graphics, double canvasWidth, double canvasHeight) {
