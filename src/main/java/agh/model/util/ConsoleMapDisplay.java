@@ -1,6 +1,7 @@
-package agh.model;
+package agh.model.util;
 
-import agh.model.util.ConsoleMapVisualizer;
+import agh.model.MapChangeListener;
+import agh.model.maps.AbstractWorldMap;
 
 public class ConsoleMapDisplay implements MapChangeListener {
 

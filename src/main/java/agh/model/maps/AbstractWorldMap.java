@@ -1,6 +1,9 @@
-package agh.model;
+package agh.model.maps;
 
+import agh.model.*;
 import agh.model.animal.Animal;
+import agh.model.grass.Grass;
+import agh.model.grass.GrassGenerator;
 import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.MultiValueHashMap;
 import agh.model.util.RandomPositionGenerator;

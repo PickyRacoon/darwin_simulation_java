@@ -1,7 +1,6 @@
-import agh.SimulationConfig;
-import agh.model.AbstractWorldMap;
-import agh.model.JungleWorldMap;
-import agh.model.MapDirection;
+import agh.simulation.SimulationConfig;
+import agh.model.maps.JungleWorldMap;
+import agh.model.maps.MapDirection;
 import agh.model.animal.Animal;
 import agh.model.Vector2d;
 import agh.model.animal.Genotype;

@@ -1,6 +1,9 @@
-package agh.model;
+package agh.model.maps;
 
-import agh.FarmingStatistics;
+import agh.simulation.FarmingStatistics;
+import agh.model.grass.BigGrass;
+import agh.model.grass.Grass;
+import agh.model.Vector2d;
 import agh.model.animal.Animal;
 
 import java.util.ArrayList;

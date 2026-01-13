@@ -1,13 +1,14 @@
-package agh;
+package agh.simulation;
 
+import agh.CSVLogger;
 import agh.model.*;
 import agh.model.animal.Animal;
 import agh.model.animal.Genotype;
-import agh.model.util.ConsoleMapVisualizer;
+import agh.model.grass.Grass;
+import agh.model.maps.AbstractWorldMap;
+import agh.model.maps.Boundary;
 import agh.model.util.RandomPositionGenerator;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -1,9 +1,9 @@
-package agh.model;
+package agh.model.maps;
+
+import agh.model.Vector2d;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public record Boundary(Vector2d lowerLeft, Vector2d upperRight) {
     public List<Vector2d> getAllPositions(){

@@ -1,6 +1,4 @@
-package agh;
-
-import agh.model.animal.Genotype;
+package agh.simulation;
 
 import java.util.List;
 

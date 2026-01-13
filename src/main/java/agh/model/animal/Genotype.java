@@ -1,6 +1,6 @@
 package agh.model.animal;
 
-import agh.SimulationConfig;
+import agh.simulation.SimulationConfig;
 import agh.model.RandomNumber;
 
 import java.util.ArrayList;

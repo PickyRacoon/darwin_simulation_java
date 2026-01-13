@@ -1,11 +1,10 @@
 package agh.model.animal;
 
-import agh.SimulationConfig;
+import agh.simulation.SimulationConfig;
 import agh.model.AnimalChangeListener;
-import agh.model.MapDirection;
+import agh.model.maps.MapDirection;
 import agh.model.Vector2d;
 import agh.model.WorldElement;
-import agh.model.presenter.SimulationPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

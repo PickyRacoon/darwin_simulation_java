@@ -12,7 +12,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            fx:controller="agh.MenuController"
+            fx:controller="agh.presenter.MenuController"
             stylesheets="style.css">
     <top>
         <VBox styleClass="header-box">

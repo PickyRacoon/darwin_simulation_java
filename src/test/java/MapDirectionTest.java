@@ -1,4 +1,4 @@
-import agh.model.MapDirection;
+import agh.model.maps.MapDirection;
 import agh.model.Vector2d;
 import org.junit.jupiter.api.Test;
 

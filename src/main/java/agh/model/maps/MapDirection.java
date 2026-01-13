@@ -1,6 +1,7 @@
-package agh.model;
+package agh.model.maps;
 
-import java.util.Vector;
+import agh.model.RandomNumber;
+import agh.model.Vector2d;
 
 public enum MapDirection {
     NORTH,

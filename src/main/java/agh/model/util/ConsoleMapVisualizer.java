@@ -1,8 +1,7 @@
 package agh.model.util;
 
-import agh.model.AbstractWorldMap;
+import agh.model.maps.AbstractWorldMap;
 import agh.model.Vector2d;
-import agh.model.JungleWorldMap;
 import agh.model.animal.Animal;
 
 import java.util.List;

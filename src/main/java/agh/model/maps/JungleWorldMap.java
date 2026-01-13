@@ -1,8 +1,10 @@
-package agh.model;
+package agh.model.maps;
+
+import agh.model.Vector2d;
 
 import java.util.List;
 
-public class JungleWorldMap extends AbstractWorldMap{
+public class JungleWorldMap extends AbstractWorldMap {
     private final Boundary jungle;
 
     public JungleWorldMap(int width, int height, int numGrass) {

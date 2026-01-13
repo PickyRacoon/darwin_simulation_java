@@ -1,5 +1,6 @@
 package agh;
 
+import agh.presenter.MenuController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

@@ -1,4 +1,6 @@
-package agh.model;
+package agh.model.grass;
+
+import agh.model.Vector2d;
 
 public class BigGrass extends Grass {
     public BigGrass(Vector2d position, int numMeals) {

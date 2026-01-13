@@ -1,15 +1,16 @@
-package agh;
+package agh.presenter;
 
-import agh.model.AbstractWorldMap;
-import agh.model.FarmingWorldMap;
-import agh.model.JungleWorldMap;
-import agh.model.presenter.SimulationPresenter;
+import agh.CSVLogger;
+import agh.simulation.FarmingStatistics;
+import agh.simulation.SimulationConfig;
+import agh.model.maps.AbstractWorldMap;
+import agh.model.maps.FarmingWorldMap;
+import agh.model.maps.JungleWorldMap;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -17,8 +18,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MenuController {
     @FXML

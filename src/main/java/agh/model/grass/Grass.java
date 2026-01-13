@@ -1,4 +1,7 @@
-package agh.model;
+package agh.model.grass;
+
+import agh.model.Vector2d;
+import agh.model.WorldElement;
 
 public class Grass implements WorldElement {
     private final Vector2d position;

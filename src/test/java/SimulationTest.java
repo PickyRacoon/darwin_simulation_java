@@ -1,8 +1,7 @@
-import agh.CSVLogger;
-import agh.Simulation;
-import agh.SimulationConfig;
-import agh.model.AbstractWorldMap;
-import agh.model.JungleWorldMap;
+import agh.simulation.Simulation;
+import agh.simulation.SimulationConfig;
+import agh.model.maps.AbstractWorldMap;
+import agh.model.maps.JungleWorldMap;
 import agh.model.animal.Animal;
 import org.junit.jupiter.api.Test;
 

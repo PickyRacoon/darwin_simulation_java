@@ -11,7 +11,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            fx:controller="agh.model.presenter.SimulationPresenter"
+            fx:controller="agh.presenter.SimulationPresenter"
             stylesheets="style.css">
     <center>
         <Canvas fx:id="mapCanvas"/>

@@ -1,12 +1,16 @@
-package agh.model.presenter;
+package agh.presenter;
 
 import agh.CSVLogger;
-import agh.Simulation;
-import agh.SimulationConfig;
-import agh.SimulationStatistics;
+import agh.model.maps.Boundary;
+import agh.simulation.Simulation;
+import agh.simulation.SimulationConfig;
+import agh.simulation.SimulationStatistics;
 import agh.model.*;
 import agh.model.animal.Animal;
 import agh.model.animal.AnimalStatus;
+import agh.model.maps.AbstractWorldMap;
+import agh.model.maps.FarmingWorldMap;
+import agh.model.maps.JungleWorldMap;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.VPos;
