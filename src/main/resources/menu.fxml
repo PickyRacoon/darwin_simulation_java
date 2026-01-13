@@ -25,11 +25,11 @@
                 <VBox>
                     <VBox styleClass="content-box">
                         <HBox styleClass="input-row">
-                            <Spinner fx:id="mapWidth" initialValue="10" max="100" editable="true"/>
+                            <Spinner fx:id="mapWidth" initialValue="10" max="30" editable="true"/>
                             <Label styleClass="input-label">Map width</Label>
                         </HBox>
                         <HBox styleClass="input-row">
-                            <Spinner fx:id="mapHeight" initialValue="10" max="100" editable="true"/>
+                            <Spinner fx:id="mapHeight" initialValue="10" max="30" editable="true"/>
                             <Label styleClass="input-label">Map height</Label>
                         </HBox>
                         <HBox styleClass="input-row">
