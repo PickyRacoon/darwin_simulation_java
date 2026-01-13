@@ -174,7 +174,7 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
     private void drawHealthBar(GraphicsContext graphics, Animal animal, int x, int y, double canvasHeight) {
         double barWidth = cellSize;
         double barHeight = cellSize / 4;
-        double energyLevel = Math.max(0, Math.min(1, animal.getEnergy() / 100));
+        double energyLevel = Math.max(0, Math.min(1, (double) animal.getEnergy() / 100));
         double barFill = barWidth * energyLevel;
 
         double barX = x * cellSize + cellSize;
@@ -182,7 +182,7 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
 
         Color color;
         if (energyLevel > 0.6) color = Color.GREENYELLOW;
-        else if  (energyLevel > 0.35 ) color = Color.YELLOW;
+        else if  (energyLevel > 0.36 ) color = Color.YELLOW;
         else color = Color.RED;
 
         graphics.setFill(color);
