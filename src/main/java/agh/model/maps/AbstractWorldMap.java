@@ -168,13 +168,22 @@ public abstract class AbstractWorldMap {
         return List.of(grasses.get(position));
     }
     public List<Animal> getAnimalsAt(Vector2d position) {
-        return animals.containsKey(position)
-                ? List.copyOf(animals.get(position))
-                : List.of();
+        List<Animal> copy;
+        synchronized (animals) {
+            copy = animals.containsKey(position)
+                    ? List.copyOf(animals.get(position))
+                    : List.of();
+        }
+        return copy;
     }
 
     public List<Animal> getAllAnimals() {
-        return animals.values().stream()
+        List<List<Animal>> valuesCopy;
+        synchronized (animals) {
+            valuesCopy = new ArrayList<>(animals.values());
+        }
+
+        return valuesCopy.stream()
                 .flatMap(List::stream)
                 .toList();
     }

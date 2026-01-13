@@ -11,8 +11,9 @@ public class CSVLogger implements AutoCloseable{
 
     public CSVLogger(File file) throws IOException {
         // czy na pewno wszytko istnieje
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
         }
         this.writer = new PrintWriter(new FileWriter(file, true));
     }

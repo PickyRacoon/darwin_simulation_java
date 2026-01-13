@@ -100,6 +100,23 @@ public class MenuController {
         File file = new File(folder, fileName);
         csvLogger = new CSVLogger(file);
 
+        SimulationConfig config = getSimulationConfig();
+
+        presenter.createSimulation(config, csvLogger);
+
+        simulationStage.setOnCloseRequest(event -> {
+            presenter.stopSimulation();
+            if (csvLogger != null) {
+                csvLogger.close();
+            }
+            System.out.println("Simulation closed");
+        });
+
+        configureSimulationStage(simulationStage, root);
+        simulationStage.show();
+    }
+
+    private SimulationConfig getSimulationConfig() {
         FarmingStatistics farmingStatistics = null;
         if (simulationVariation.isSelected()) {
             farmingStatistics = new FarmingStatistics(
@@ -117,7 +134,7 @@ public class MenuController {
             worldMap = new FarmingWorldMap(mapWidth.getValue(), mapHeight.getValue(), numGrass.getValue(), farmingStatistics);
         }
 
-        SimulationConfig config = new SimulationConfig(
+        return new SimulationConfig(
                 worldMap,
                 numAnimals.getValue(),
                 numGrass.getValue(),
@@ -131,19 +148,6 @@ public class MenuController {
                 maxNumMutations.getValue(),
                 genotypeLen.getValue()
         );
-
-        presenter.createSimulation(config, csvLogger);
-
-        simulationStage.setOnCloseRequest(event -> {
-            presenter.stopSimulation();
-            if (csvLogger != null) {
-                csvLogger.close();
-            }
-            System.out.println("Simulation closed");
-        });
-
-        configureSimulationStage(simulationStage, root);
-        simulationStage.show();
     }
 
     private void configureSimulationStage(Stage stage, BorderPane viewRoot) {
