@@ -2,7 +2,7 @@
 - Patrycja Markiewicz
 - Tomasz Firganek
 
-## Wariant
+## Wariant C
 - Uprawianie ziemi 
 
 ## Rozszerzenia
@@ -12,3 +12,4 @@
 - wyróżnienie wizualne (kolor czerwony) zwierzaka z najpopularniejszym genotypem oraz pozycji preferowanych przez rośliny
 - zapisywanie statystych symulacji do pliku CSV po każdym dniu
    
+
