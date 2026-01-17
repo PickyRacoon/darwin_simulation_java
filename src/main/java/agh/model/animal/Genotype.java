@@ -10,7 +10,6 @@ public class Genotype {
     private static final int MIN_GENOM_NUMBER = 0;
     private static final int MAX_GENOM_NUMBER = 7;
 
-    //private static final int genomLength = 10;
     private final SimulationConfig config;
     private final List<Integer> genom;
     private int actievGenomIndex = 0;
@@ -47,39 +46,46 @@ public class Genotype {
     }
 
     public static Genotype crossGenotype(Animal parent1, Animal parent2, SimulationConfig config) {
-        List<Integer> childGenes = new ArrayList<>();
+        ParentPair parents = selectByEnergy(parent1, parent2);
 
-        Animal strongerParent, weakerParent;
-        if (parent1.getEnergy() >= parent2.getEnergy()) {
-            strongerParent = parent1;
-            weakerParent = parent2;
-        } else {
-            strongerParent = parent2;
-            weakerParent = parent1;
-        }
+        int splitIndex = calculateSplitIndex(parents.stronger(),
+                parents.weaker(), config.genotypeLen());
 
-        List<Integer> strongerGenes = strongerParent.getGenotype().getGenom();
-        List<Integer> weakerGenes = weakerParent.getGenotype().getGenom();
-
-        // udział genow silniejszego rodzica
-        double ratio = (double) strongerParent.getEnergy() / (strongerParent.getEnergy() + weakerParent.getEnergy());
-        int splitIndex = (int) Math.round(config.genotypeLen() * ratio);
-
-        boolean takeFromLeft = RandomNumber.getRandomNumberInRange(0, 1) == 0;
-
-        if (takeFromLeft) {
-            // lewa czesc silniejszego + prawa czesc slabszego
-            childGenes.addAll(strongerGenes.subList(0, splitIndex));
-            childGenes.addAll(weakerGenes.subList(splitIndex, config.genotypeLen()));
-        } else {
-            // prawa czesc silniejszego + lewa czesc slabszego
-            childGenes.addAll(weakerGenes.subList(0, config.genotypeLen() - splitIndex));
-            childGenes.addAll(strongerGenes.subList(config.genotypeLen() - splitIndex, config.genotypeLen()));
-        }
+        List<Integer> childGenes = mix(parents.stronger().getGenotype().getGenom(),
+                parents.weaker().getGenotype().getGenom(), splitIndex, config.genotypeLen());
 
         Genotype childGenotype = new Genotype(childGenes, config);
         childGenotype.mutateGenom();
         return childGenotype;
+    }
+
+    public static ParentPair selectByEnergy(Animal a, Animal b) {
+        if (a.getEnergy() >= b.getEnergy()) {
+            return new ParentPair(a, b);
+        }
+        return new ParentPair(b, a);
+    }
+
+    public static int calculateSplitIndex(Animal stronger, Animal weaker, int genotypeLen) {
+        double ratio = (double) stronger.getEnergy()
+                / (stronger.getEnergy() + weaker.getEnergy());
+
+        return (int) Math.round(genotypeLen * ratio);
+    }
+
+    public static List<Integer> mix(List<Integer> strongerGenes, List<Integer> weakerGenes, int splitIndex, int genotypeLen) {
+        List<Integer> result = new ArrayList<>();
+        boolean takeFromLeft = RandomNumber.getRandomNumberInRange(0, 1) == 0;
+
+        if (takeFromLeft) {
+            result.addAll(strongerGenes.subList(0, splitIndex));
+            result.addAll(weakerGenes.subList(splitIndex, genotypeLen));
+        } else {
+            result.addAll(weakerGenes.subList(0, genotypeLen - splitIndex));
+            result.addAll(strongerGenes.subList(genotypeLen - splitIndex, genotypeLen));
+        }
+
+        return result;
     }
 
     public void mutateGenom() {

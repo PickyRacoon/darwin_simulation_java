@@ -16,7 +16,6 @@ public class Simulation implements Runnable {
     private final SimulationConfig config;
     private final AbstractWorldMap worldMap;
     private boolean isStopped = false;
-//    private final ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
     private final List<Animal> allDeadAnimals = new ArrayList<>();
     private int daysCount = 0;
     private final CSVLogger csvLogger;
@@ -81,14 +80,13 @@ public class Simulation implements Runnable {
     }
 
     public void initWorld() {
-        //worldMap.addObserver(consoleDisplay); // potrzebne tylko do testów w konsoli
         placeAnimals(config.numAnimals());
     }
 
     public void deleteDeadAnimals() {
         List<Animal> deadAnimals = worldMap.getAllAnimals().stream()
                 .filter(animal -> !animal.isAlive())
-                .toList(); // aby nie modyfikować mapy w trakcie iteracji
+                .toList();
 
     synchronized (allDeadAnimals) {
         for (Animal animal : deadAnimals) {
