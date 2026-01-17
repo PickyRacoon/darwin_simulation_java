@@ -171,11 +171,37 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
         drawWorldElements(mapLL, mapUR, graphics, canvasHeight);
     }
 
+    private void drawHealthBar(GraphicsContext graphics, Animal animal, int x, int y, double canvasHeight) {
+        double barWidth = cellSize;
+        double barHeight = cellSize / 4;
+        double energyLevel = Math.max(0, Math.min(1, (double) animal.getEnergy() / 100));
+        double barFill = barWidth * energyLevel;
+
+        double barX = x * cellSize + cellSize;
+        double barY = canvasHeight - y * cellSize - cellSize;
+
+        Color color;
+        if (energyLevel > 0.6) color = Color.GREENYELLOW;
+        else if  (energyLevel > 0.36 ) color = Color.YELLOW;
+        else color = Color.RED;
+
+        graphics.setFill(color);
+        graphics.fillRect(barX, barY, barFill, barHeight);
+
+        graphics.setStroke(Color.BLACK);
+        graphics.strokeRect(barX, barY, barWidth, barHeight);
+    }
+
     private void drawWorldElements(Vector2d mapLL, Vector2d mapUR, GraphicsContext graphics, double canvasHeight) {
         for (int x = mapLL.getX(); x <= mapUR.getX(); x++) {
             for (int y = mapLL.getY(); y <= mapUR.getY(); y++) {
                 Vector2d position = new Vector2d(x, y);
                 if (worldMap.isOccupied(position)) {
+                    List<Animal> animals = worldMap.getAnimalsAt(position);
+                    if  (animals.size() == 1 ) {
+                        Animal animal = animals.getFirst();
+                        drawHealthBar(graphics, animal, x, y, canvasHeight);
+                    }
                     graphics.strokeText(parseWorldElementToString(position, graphics),
                             x * cellSize + cellSize * 1.5,
                             canvasHeight - (y * cellSize) - (cellSize / 2));

@@ -45,7 +45,7 @@ public class Simulation implements Runnable {
     public void run() {
             while (!isStopped && !Thread.currentThread().isInterrupted()) {
                 try {
-                    Thread.currentThread().sleep(500);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
