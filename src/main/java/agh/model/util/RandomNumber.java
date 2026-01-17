@@ -1,4 +1,4 @@
-package agh.model;
+package agh.model.util;
 
 public class RandomNumber {
 

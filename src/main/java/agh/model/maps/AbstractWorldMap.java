@@ -4,7 +4,6 @@ import agh.model.*;
 import agh.model.animal.Animal;
 import agh.model.grass.Grass;
 import agh.model.grass.GrassGenerator;
-import agh.model.util.ConsoleMapVisualizer;
 import agh.model.util.MultiValueHashMap;
 import agh.model.util.RandomPositionGenerator;
 
@@ -16,7 +15,6 @@ public abstract class AbstractWorldMap {
     private final HashMap<Vector2d, Grass> grasses = new HashMap<>();
     protected final Boundary mapBoundary;
     private final List<MapChangeListener> observers = new ArrayList<>();
-    private final ConsoleMapVisualizer cmv = new ConsoleMapVisualizer(this); // temp dla testów
     protected final int initNumGrass;
     private int emptySquares;
 
@@ -98,49 +96,6 @@ public abstract class AbstractWorldMap {
         return positions;
     }
 
-    public synchronized void moveAllAnimals() {
-        // obejscie zeby nie zminiac listy po ktorej iterujemy
-        List<Animal> allAnimals = new ArrayList<>();
-
-        // wszystkie zwierzeta w jednej liscie
-        for (List<Animal> list : animals.values()) {
-            allAnimals.addAll(list);
-        }
-
-        for (Animal animal : allAnimals) {
-            Vector2d oldPos = animal.getPosition();
-
-            // usuniecie ze starej pozycji
-            List<Animal> list = animals.get(oldPos);
-            if (list != null) {
-                list.remove(animal);
-                if (animals.get(oldPos).isEmpty()) {
-                    animals.remove(oldPos);
-                    emptySquares++;
-                }
-            }
-
-            animal.move();
-
-            // zeby zgodnie z mapa pelz
-            Vector2d newPos = wrapPosition(animal.getPosition());
-            animal.setPosition(newPos);
-
-            // dodanie animalka do nowej pozycji
-            if (!animals.containsKey(newPos)) {
-                emptySquares--;
-            }
-            animals.put(newPos, animal);
-
-            mapChanged("%s moved from %s to %s"
-                    .formatted(animal, oldPos, newPos));
-        }
-    }
-
-    public boolean inBounds(Vector2d position) {
-        return position.follows(mapBoundary.lowerLeft()) && position.precedes(mapBoundary.upperRight());
-    }
-
     public Vector2d wrapPosition(Vector2d position) {
         int x = position.getX();
         int y = position.getY();
@@ -161,12 +116,6 @@ public abstract class AbstractWorldMap {
         return new Vector2d(x, y);
     }
 
-    public List<WorldElement> objectAt(Vector2d position) {
-        if (isAnimalAt(position)) {
-            return List.copyOf(animals.get(position));
-        }
-        return List.of(grasses.get(position));
-    }
     public List<Animal> getAnimalsAt(Vector2d position) {
         List<Animal> copy;
         synchronized (animals) {
@@ -240,11 +189,6 @@ public abstract class AbstractWorldMap {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this, message);
         }
-    }
-
-    @Override
-    public String toString() {
-        return cmv.draw(getMapBoundary().lowerLeft(), getMapBoundary().upperRight());
     }
 
 }

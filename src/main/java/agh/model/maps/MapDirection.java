@@ -1,6 +1,6 @@
 package agh.model.maps;
 
-import agh.model.RandomNumber;
+import agh.model.util.RandomNumber;
 import agh.model.Vector2d;
 
 public enum MapDirection {

@@ -14,7 +14,6 @@ import java.util.UUID;
 public class Animal implements WorldElement {
     private final SimulationConfig config;
     private final Genotype genotype;
-    private final UUID animalId = UUID.randomUUID();
 
     private Vector2d position;
     private MapDirection direction;
