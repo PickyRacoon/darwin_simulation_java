@@ -57,15 +57,19 @@ public class Simulation implements Runnable {
                 growNewPlants(config.numDailyGrass());
                 daysCount++;
 
-                if (csvLogger != null) {
-                    SimulationStatistics stats = getSimulationStatistics();
-                    String popularGenotypeString = stats.popularGenotype().stream()
-                            .map(Object::toString)
-                            .collect(Collectors.joining(""));
-                    csvLogger.logDay(daysCount, stats.animalCount(), stats.grassCount(), stats.emptySquares(),
-                            stats.avgEnergy(), stats.avgLifeSpan(), stats.avgChildrenCount(), popularGenotypeString);
-                }
+                logDay();
             }
+    }
+
+    private void logDay() {
+        if (csvLogger != null) {
+            SimulationStatistics stats = getSimulationStatistics();
+            String popularGenotypeString = stats.popularGenotype().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(""));
+            csvLogger.logDay(daysCount, stats.animalCount(), stats.grassCount(), stats.emptySquares(),
+                    stats.avgEnergy(), stats.avgLifeSpan(), stats.avgChildrenCount(), popularGenotypeString);
+        }
     }
 
     public void stopSimulation() {

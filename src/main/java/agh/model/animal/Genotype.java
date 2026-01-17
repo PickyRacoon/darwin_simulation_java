@@ -1,7 +1,7 @@
 package agh.model.animal;
 
 import agh.simulation.SimulationConfig;
-import agh.model.RandomNumber;
+import agh.model.util.RandomNumber;
 
 import java.util.ArrayList;
 import java.util.List;

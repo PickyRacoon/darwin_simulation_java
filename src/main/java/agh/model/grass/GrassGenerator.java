@@ -1,6 +1,6 @@
 package agh.model.grass;
 
-import agh.model.RandomNumber;
+import agh.model.util.RandomNumber;
 import agh.model.Vector2d;
 import agh.model.util.RandomPositionGenerator;
 import java.util.List;

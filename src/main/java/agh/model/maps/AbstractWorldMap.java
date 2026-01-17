@@ -167,6 +167,7 @@ public abstract class AbstractWorldMap {
         }
         return List.of(grasses.get(position));
     }
+
     public List<Animal> getAnimalsAt(Vector2d position) {
         List<Animal> copy;
         synchronized (animals) {
