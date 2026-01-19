@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record Boundary(Vector2d lowerLeft, Vector2d upperRight) {
-    public List<Vector2d> getAllPositions(){
+    public List<Vector2d> getAllPositions() {
         Vector2d lowerLeft = this.lowerLeft();
         Vector2d upperRight = this.upperRight();
         List<Vector2d> allPositions = new ArrayList<>();

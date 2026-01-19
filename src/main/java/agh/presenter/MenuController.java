@@ -106,10 +106,6 @@ public class MenuController {
 
     private void setPresetValues(String presetName) throws IOException {
         HashMap<String, Integer> presetValues = presetLoader.readPresetValues(presetName);
-
-        System.out.println("Loaded preset values: " + presetValues);
-
-
         mapWidth.getValueFactory().setValue(presetValues.get("mapWidth"));
         mapHeight.getValueFactory().setValue(presetValues.get("mapHeight"));
         numAnimals.getValueFactory().setValue(presetValues.get("numAnimals"));
