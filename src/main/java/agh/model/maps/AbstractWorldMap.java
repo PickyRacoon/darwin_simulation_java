@@ -16,11 +16,11 @@ public abstract class AbstractWorldMap {
     protected final Boundary mapBoundary;
     private final List<MapChangeListener> observers = new ArrayList<>();
     protected final int initNumGrass;
-    private int emptySquares;
+    private final int total;
 
     public AbstractWorldMap(int width, int height, int numGrass) {
         this.mapBoundary = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
-        this.emptySquares = width * height;
+        this.total = width * height;
         this.initNumGrass = numGrass;
     }
 
@@ -45,13 +45,9 @@ public abstract class AbstractWorldMap {
 
     protected abstract List<Vector2d> getJunglePositions();
 
-    // to do - jak wolne miejsce to trza odjac emptySquare--
     public void placeAnimal(Animal animal) {
         Vector2d position = animal.getPosition();
-        if (!isAnimalAt(position) && !isGrassAt(position)) {
-            emptySquares--;
-        }
-        animals.put(animal.getPosition(), animal);
+        animals.put(position, animal);
         this.mapChanged("%s was placed at %s".formatted(animal, animal.getPosition()));
     }
 
@@ -62,9 +58,6 @@ public abstract class AbstractWorldMap {
             list.remove(animal);
             if (list.isEmpty()) {
                 animals.remove(animal.getPosition());
-                if (!isGrassAt(position)) {
-                    emptySquares++;
-                }
             }
         }
         mapChanged("Animal removed");
@@ -72,21 +65,13 @@ public abstract class AbstractWorldMap {
 
     public void placeGrass(Grass grass) {
         Vector2d position = grass.getPosition();
-        if (!grasses.containsKey(position) && !isAnimalAt(position)) {
-            emptySquares--;
-        }
         grasses.put(position, grass);
-
         mapChanged("Grass was placed at %s".formatted(grass.getPosition()));
     }
 
     public void removeGrass(Grass grass) {
         Vector2d position = grass.getPosition();
-        if (grasses.remove(position) != null) {
-            if (!isAnimalAt(position)) {
-                emptySquares++;
-            }
-        }
+        grasses.remove(position);
         mapChanged("Grass removed");
     }
 
@@ -116,6 +101,14 @@ public abstract class AbstractWorldMap {
         return new Vector2d(x, y);
     }
 
+    public int getEmptySquares() {
+        Set<Vector2d> occupied = new HashSet<>();
+        occupied.addAll(animals.keySet());
+        occupied.addAll(grasses.keySet());
+
+        return total - occupied.size();
+    }
+
     public List<Animal> getAnimalsAt(Vector2d position) {
         List<Animal> copy;
         synchronized (animals) {
@@ -139,10 +132,6 @@ public abstract class AbstractWorldMap {
 
     public boolean isOccupied(Vector2d position) {
         return isAnimalAt(position) || isGrassAt(position);
-    }
-
-    public int getEmptySquares() {
-        return emptySquares;
     }
 
     public boolean isAnimalAt(Vector2d position) {
