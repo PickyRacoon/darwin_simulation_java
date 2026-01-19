@@ -33,6 +33,7 @@
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10"/>
                 </padding>
+                <Label text="Simulation Statistics:"/>
                 <Label fx:id="animalCountLabel" text="Animals: 0"/>
                 <Label fx:id="grassCountLabel" text="Grass: 0"/>
                 <Label fx:id="emptySquaresLabel" text="Empty Squares: 0"/>
@@ -45,7 +46,7 @@
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10"/>
                 </padding>
-                <Label text="Animal Status:"/>
+                <Label text="Selected Animal Status:"/>
                 <Label fx:id="animalGenome" text="Genome:"/>
                 <Label fx:id="activeGenomeIndex" text="Genome index:"/>
                 <Label fx:id="animalEnergy" text="Energy:"/>
