@@ -9,6 +9,9 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.cell.ComboBoxListCell?>
+<?import javafx.scene.control.ComboBox?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
@@ -16,7 +19,7 @@
             stylesheets="style.css">
     <top>
         <VBox styleClass="header-box">
-            <Label styleClass="header-label">Witamy w symulatorze życia!</Label>
+            <Label styleClass="header-label">Welcome to life simulator</Label>
         </VBox>
     </top>
     <center>
@@ -24,6 +27,10 @@
                 <content>
                 <VBox>
                     <VBox styleClass="content-box">
+                        <HBox styleClass="input-row">
+                            <ComboBox fx:id="presetsBox" prefWidth="200.0" />
+                            <Label styleClass="input-label">Presets</Label>
+                        </HBox>
                         <HBox styleClass="input-row">
                             <Spinner fx:id="mapWidth" initialValue="10" max="30" editable="true"/>
                             <Label styleClass="input-label">Map width</Label>
