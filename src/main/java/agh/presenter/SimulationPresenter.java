@@ -231,7 +231,7 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
             }
 
             graphics.strokeText(animal.toString(), position.getX() * cellSize + cellSize * 1.5,
-                    canvasHeight - (position.getY() * cellSize) - (cellSize / 2) + i * 12);
+                    canvasHeight - (position.getY() * cellSize) - (cellSize / 2) + i * cellSize/4);
         }
     }
 

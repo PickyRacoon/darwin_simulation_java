@@ -1,16 +1,21 @@
 package agh.presenter;
 
 import agh.CSVLogger;
+import agh.PresetLoader;
 import agh.simulation.FarmingStatistics;
 import agh.simulation.SimulationConfig;
 import agh.model.maps.AbstractWorldMap;
 import agh.model.maps.FarmingWorldMap;
 import agh.model.maps.JungleWorldMap;
 import javafx.application.Platform;
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -18,6 +23,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MenuController {
     @FXML
@@ -58,9 +66,12 @@ public class MenuController {
     private Spinner<Integer> numMeals;
     @FXML
     private Spinner<Integer> fertileLandValue;
+    @FXML
+    private ComboBox<String> presetsBox;
 
     private Stage stage;
     private CSVLogger csvLogger;
+    private final PresetLoader presetLoader = new PresetLoader();
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -70,6 +81,54 @@ public class MenuController {
             Platform.exit();       // konczy cale gui
             System.exit(0);     // konczy jvm
         });
+    }
+
+    @FXML
+    public void initialize() throws IOException {
+        List<String> presets = presetLoader.readPresets();
+        ObservableList<String> options = FXCollections.observableArrayList(presets);
+
+        presetsBox.setItems(options);
+
+        presetsBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        try {
+                            setPresetValues(newValue);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+        );
+    }
+
+    private void setPresetValues(String presetName) throws IOException {
+        HashMap<String, Integer> presetValues = presetLoader.readPresetValues(presetName);
+
+        System.out.println("Loaded preset values: " + presetValues);
+
+
+        mapWidth.getValueFactory().setValue(presetValues.get("mapWidth"));
+        mapHeight.getValueFactory().setValue(presetValues.get("mapHeight"));
+        numAnimals.getValueFactory().setValue(presetValues.get("numAnimals"));
+        numGrass.getValueFactory().setValue(presetValues.get("numGrass"));
+        grassEnergy.getValueFactory().setValue(presetValues.get("grassEnergy"));
+        numDailyGrass.getValueFactory().setValue(presetValues.get("numDailyGrass"));
+        animalStartEnergy.getValueFactory().setValue(presetValues.get("animalStartEnergy"));
+        animalLooseEnergy.getValueFactory().setValue(presetValues.get("animalLooseEnergy"));
+        animalMinBreedEnergy.getValueFactory().setValue(presetValues.get("animalMinBreedEnergy"));
+        animalEnergyUsedToBreed.getValueFactory().setValue(presetValues.get("animalEnergyUsedToBreed"));
+        minNumMutations.getValueFactory().setValue(presetValues.get("minNumMutations"));
+        maxNumMutations.getValueFactory().setValue(presetValues.get("maxNumMutations"));
+        genotypeLen.getValueFactory().setValue(presetValues.get("genotypeLen"));
+        simulationVariation.setSelected(presetValues.get("simulationVariation") == 1);
+        onCultivatingToggle();
+        minEnergyToCultivate.getValueFactory().setValue(presetValues.get("minEnergyToCultivate"));
+        daysLandIsFertile.getValueFactory().setValue(presetValues.get("daysLandIsFertile"));
+        numMeals.getValueFactory().setValue(presetValues.get("numMeals"));
+        fertileLandValue.getValueFactory().setValue(presetValues.get("fertileLandValue"));
     }
 
     @FXML
