@@ -31,10 +31,6 @@ import java.util.concurrent.Future;
 public class SimulationPresenter implements MapChangeListener, AnimalChangeListener {
     private static final int MAX_CANVAS_WIDTH = 500;
     private static final int MAX_CANVAS_HEIGHT = 500;
-    private static final int MIN_CELL_WIDTH = 15;
-    private static final int MIN_CELL_HEIGHT = 15;
-    private static final int CELL_WIDTH = 15;
-    private static final int CELL_HEIGHT = 15;
 
     @FXML
     private Stage stage;
@@ -196,43 +192,54 @@ public class SimulationPresenter implements MapChangeListener, AnimalChangeListe
         for (int x = mapLL.getX(); x <= mapUR.getX(); x++) {
             for (int y = mapLL.getY(); y <= mapUR.getY(); y++) {
                 Vector2d position = new Vector2d(x, y);
-                if (worldMap.isOccupied(position)) {
+
+                if (worldMap.isAnimalAt(position)) {
                     List<Animal> animals = worldMap.getAnimalsAt(position);
-                    if  (animals.size() == 1 ) {
-                        Animal animal = animals.getFirst();
-                        drawHealthBar(graphics, animal, x, y, canvasHeight);
+
+                    if (animals.size() == 1) {
+                        drawHealthBar(graphics, animals.getFirst(), x, y, canvasHeight);
                     }
-                    graphics.strokeText(parseWorldElementToString(position, graphics),
-                            x * cellSize + cellSize * 1.5,
-                            canvasHeight - (y * cellSize) - (cellSize / 2));
+
+                    drawAnimalsAt(position, graphics, canvasHeight);
+                    continue;
+                }
+
+                if (worldMap.isGrassAt(position)) {
+                    drawGrass(position, graphics, canvasHeight);
                 }
             }
         }
     }
+
 
     private boolean isMostPopularGenotype(Animal animal) {
         SimulationStatistics stats = simulation.getSimulationStatistics();
         return animal.getGenotype().getGenom().equals(stats.popularGenotype());
     }
 
-    private String parseWorldElementToString(Vector2d position, GraphicsContext graphics) {
+    private void drawAnimalsAt(Vector2d position, GraphicsContext graphics, double canvasHeight) {
         List<Animal> animals = worldMap.getAnimalsAt(position);
-        if (!animals.isEmpty()) {
-            Animal animal = animals.getFirst();
+        int limit = Math.min(2, animals.size());
+
+        for (int i = 0; i < limit; i++) {
+            Animal animal = animals.get(i);
+
             if (isMostPopularGenotype(animal)) {
                 configureFont(graphics, (int) cellSize / 4, Color.RED);
             } else {
                 configureFont(graphics, (int) cellSize / 4, Color.BLACK);
             }
-            if (animals.size() > 1) {
-                return animal.toString() + "\n" + animal.toString();
-            } else {return animal.toString();}
+
+            graphics.strokeText(animal.toString(), position.getX() * cellSize + cellSize * 1.5,
+                    canvasHeight - (position.getY() * cellSize) - (cellSize / 2) + i * 12);
         }
-        if (worldMap.isGrassAt(position)) {
-            configureFont(graphics, (int) cellSize / 2, Color.GREEN);
-            return worldMap.getGrassAt(position).toString();
-        }
-        return null;
+    }
+
+    private void drawGrass(Vector2d position, GraphicsContext graphics, double canvasHeight) {
+        configureFont(graphics, (int) cellSize / 2, Color.GREEN);
+
+        graphics.strokeText(worldMap.getGrassAt(position).toString(), position.getX() * cellSize + cellSize * 1.5,
+                canvasHeight - (position.getY() * cellSize) - (cellSize / 2));
     }
 
     private void drawMapIndex(Vector2d mapLL, Vector2d mapUR, GraphicsContext graphics, double canvasHeight) {
