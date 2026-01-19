@@ -46,32 +46,41 @@ public abstract class AbstractWorldMap {
     protected abstract List<Vector2d> getJunglePositions();
 
     public void placeAnimal(Animal animal) {
-        Vector2d position = animal.getPosition();
-        animals.put(position, animal);
+        synchronized (animals) {
+            Vector2d position = animal.getPosition();
+            animals.put(position, animal);
+        }
         this.mapChanged("%s was placed at %s".formatted(animal, animal.getPosition()));
     }
 
     public void removeAnimal(Animal animal) {
-        Vector2d position = animal.getPosition();
-        List<Animal> list = animals.get(position);
-        if (list != null) {
-            list.remove(animal);
-            if (list.isEmpty()) {
-                animals.remove(animal.getPosition());
+        synchronized (animals) {
+            Vector2d position = animal.getPosition();
+            List<Animal> list = animals.get(position);
+            if (list != null) {
+                list.remove(animal);
+                if (list.isEmpty()) {
+                    animals.remove(animal.getPosition());
+                }
             }
         }
+
         mapChanged("Animal removed");
     }
 
     public void placeGrass(Grass grass) {
-        Vector2d position = grass.getPosition();
-        grasses.put(position, grass);
+        synchronized (grasses) {
+            Vector2d position = grass.getPosition();
+            grasses.put(position, grass);
+        }
         mapChanged("Grass was placed at %s".formatted(grass.getPosition()));
     }
 
     public void removeGrass(Grass grass) {
-        Vector2d position = grass.getPosition();
-        grasses.remove(position);
+        synchronized (grasses) {
+            Vector2d position = grass.getPosition();
+            grasses.remove(position);
+        }
         mapChanged("Grass removed");
     }
 
@@ -103,8 +112,12 @@ public abstract class AbstractWorldMap {
 
     public int getEmptySquares() {
         Set<Vector2d> occupied = new HashSet<>();
-        occupied.addAll(animals.keySet());
-        occupied.addAll(grasses.keySet());
+        synchronized (animals) {
+            occupied.addAll(animals.keySet());
+        }
+        synchronized (grasses) {
+            occupied.addAll(grasses.keySet());
+        }
 
         return total - occupied.size();
     }
