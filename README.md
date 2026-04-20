@@ -1,11 +1,11 @@
-## Autorzy
+## Authors
 - Patrycja Markiewicz
 - Tomasz Firganek
 
-## Wariant C
+## Wariant
 - Uprawianie ziemi 
 
-## Rozszerzenia
+## Interesting features
 - uruchamianie wielu symulacji jednocześnie w osobnych oknach
 - wizualizacja energii zwierzaków na żywo w trakcie symulacji
 - podglądanie statystyk danego zwierzęcia (jak na danym polu jest kilka zwierząt, to klikając ponownie w to pole wyświetlają sie statystyki kolejnego zwierzaka)
