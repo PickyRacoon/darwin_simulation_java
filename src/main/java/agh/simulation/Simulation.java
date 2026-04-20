@@ -1,0 +1,234 @@
+package agh.simulation;
+
+import agh.CSVLogger;
+import agh.model.*;
+import agh.model.animal.Animal;
+import agh.model.animal.Genotype;
+import agh.model.grass.Grass;
+import agh.model.maps.AbstractWorldMap;
+import agh.model.maps.Boundary;
+import agh.model.util.RandomPositionGenerator;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Simulation implements Runnable {
+    private final SimulationConfig config;
+    private final AbstractWorldMap worldMap;
+    private boolean isStopped = false;
+    private final List<Animal> allDeadAnimals = new ArrayList<>();
+    private int daysCount = 0;
+    private final CSVLogger csvLogger;
+
+    // do testow
+    public Simulation(SimulationConfig config) {
+        this(config, null);
+    }
+
+    public Simulation(SimulationConfig config, CSVLogger csvLogger) {
+        this.config = config;
+        this.worldMap = config.worldMap();
+        this.csvLogger = csvLogger;
+        this.initWorld();
+    }
+
+    private void placeAnimals(int count) {
+        Boundary mapBoundary = worldMap.getMapBoundary();
+        RandomPositionGenerator randomPositions = new RandomPositionGenerator(mapBoundary.getAllPositions(), count, false);
+        for (Vector2d position : randomPositions) {
+            worldMap.placeAnimal(new Animal(position, config));
+        }
+    }
+
+    @Override
+    public void run() {
+            while (!isStopped && !Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+                deleteDeadAnimals();
+                moveAnimals();
+                eat();
+                procreate();
+                growNewPlants(config.numDailyGrass());
+                daysCount++;
+
+                logDay();
+            }
+    }
+
+    private void logDay() {
+        if (csvLogger != null) {
+            SimulationStatistics stats = getSimulationStatistics();
+            String popularGenotypeString = stats.popularGenotype().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(""));
+            csvLogger.logDay(daysCount, stats.animalCount(), stats.grassCount(), stats.emptySquares(),
+                    stats.avgEnergy(), stats.avgLifeSpan(), stats.avgChildrenCount(), popularGenotypeString);
+        }
+    }
+
+    public void stopSimulation() {
+        isStopped = true;
+    }
+
+    public void startSimulation() {
+        isStopped = false;
+    }
+
+    public void initWorld() {
+        placeAnimals(config.numAnimals());
+    }
+
+    public void deleteDeadAnimals() {
+        List<Animal> deadAnimals = worldMap.getAllAnimals().stream()
+                .filter(animal -> !animal.isAlive())
+                .toList();
+
+    synchronized (allDeadAnimals) {
+        for (Animal animal : deadAnimals) {
+            allDeadAnimals.add(animal);
+            animal.setDiedOnDay(daysCount);
+            worldMap.removeAnimal(animal);
+        }
+    }
+
+    }
+
+    public void moveAnimals() {
+        List<Animal> allAnimals = new ArrayList<>(worldMap.getAllAnimals());
+
+        for (Animal animal : allAnimals) {
+            worldMap.removeAnimal(animal);
+
+            animal.move();
+
+            Vector2d newPos = worldMap.wrapPosition(animal.getPosition());
+            animal.setPosition(newPos);
+
+            worldMap.placeAnimal(animal);
+            animal.incrementDaysSurvived();
+        }
+    }
+
+    public void eat() {
+        List<Vector2d> grassPositions = new ArrayList<>(worldMap.getGrassPositions());
+
+        for (Vector2d position : grassPositions) {
+            Grass grass = worldMap.getGrassAt(position);
+            if (grass == null) continue;
+
+            List<Animal> animalsAtPosition = worldMap.getAnimalsAt(position);
+            if (animalsAtPosition.isEmpty()) continue;
+
+            // zasady z Q&A
+            Animal eater = idealAnimalToEatByQA(animalsAtPosition);
+
+            if (eater != null) {
+                eater.eat(config.grassEnergy());
+                grass.eat();
+                if (grass.isEaten()) {
+                    worldMap.removeGrass(grass);
+                }
+            }
+        }
+    }
+
+    public Animal idealAnimalToEatByQA(List<Animal> animals) {
+        if (animals.isEmpty()) return null;
+
+        Comparator<Animal> comparator = Comparator
+                .comparingInt(Animal::getEnergy).reversed()
+                .thenComparingInt(Animal::getDaysAlive).reversed()
+                .thenComparingInt(Animal::getNumberOfBreedings).reversed();
+
+        Animal bestAnimal = animals.stream().max(comparator).orElse(null);
+
+        if (bestAnimal == null) {
+            return null;
+        }
+
+        List<Animal> allBestAnimals = animals.stream()
+                .filter(animal -> comparator.compare(animal, bestAnimal) == 0)
+                .toList();
+
+        return allBestAnimals.get(new Random().nextInt(allBestAnimals.size()));
+    }
+
+    public void procreate() {
+        List<Vector2d> animalPositions = new ArrayList<>(worldMap.getAnimalPositions());
+
+        for (Vector2d position : animalPositions) {
+            List<Animal> animalsAtPosition = worldMap.getAnimalsAt(position);
+            if (animalsAtPosition.isEmpty() || animalsAtPosition.size() < 2) continue;
+
+            List<Animal> parents = animalsAtPosition.stream()
+                    .filter(Animal::canBreed)
+                    .collect(Collectors.toList());
+
+            if (parents.size() < 2) continue;
+
+            parents.sort(Comparator.comparingInt(Animal::getEnergy).reversed());
+            Animal parent1 = parents.get(0);
+            Animal parent2 = parents.get(1);
+
+            Genotype childGenotype = Genotype.crossGenotype(parent1, parent2, config);
+            Animal child = new Animal(position, childGenotype, parent1, parent2, config);
+
+            parent1.breed();
+            parent2.breed();
+
+            worldMap.placeAnimal(child);
+        }
+    }
+
+    public void growNewPlants(int numOfNewGrasses) {
+        worldMap.generateGrass(numOfNewGrasses);
+    }
+
+    public SimulationStatistics getSimulationStatistics() {
+        List<Animal> allAnimals = worldMap.getAllAnimals();
+        int animalsCount = allAnimals.size();
+        int grassCount = worldMap.getGrassPositions().size();
+        int emptySquares = worldMap.getEmptySquares();
+
+        double avgEnergy = allAnimals.stream()
+                .mapToInt(Animal::getEnergy)
+                .average()
+                .orElse(0.0);
+
+        double avgLifeSpan = allDeadAnimals.stream()
+                .mapToInt(Animal::getDaysAlive)
+                .average()
+                .orElse(0.0);
+
+        double avgChildrenCount = allAnimals.stream()
+                .mapToInt(Animal::getNumberOfBreedings)
+                .average()
+                .orElse(0.0);
+
+        Map<Genotype, Long> genCount = allAnimals.stream()
+                .collect(Collectors.groupingBy(
+                        Animal::getGenotype,
+                        Collectors.counting()
+                ));
+
+        List<Integer> mostPopular = genCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(entry -> entry.getKey().getGenom())
+                .orElse(List.of());
+
+        return new SimulationStatistics(
+                animalsCount,
+                grassCount,
+                emptySquares,
+                mostPopular,
+                avgEnergy,
+                avgLifeSpan,
+                avgChildrenCount
+        );
+    }
+}

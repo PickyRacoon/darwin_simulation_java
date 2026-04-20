@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            minHeight="550.0" minWidth="850.0"
+            fx:controller="agh.presenter.SimulationPresenter"
+            stylesheets="style.css">
+    <center>
+        <Canvas fx:id="mapCanvas"/>
+    </center>
+    <bottom>
+        <VBox styleClass="footer-box" alignment="CENTER" spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="stopButton" onAction="#stopSimulation" text="Stop" styleClass="control-button, stop-button"/>
+                <Button fx:id="startButton" onAction="#startSimulation" text="Start" styleClass="control-button, start-button"/>
+            </HBox>
+        </VBox>
+    </bottom>
+    <right>
+        <VBox>
+            <VBox fx:id="statsBox" spacing="5" alignment="TOP_LEFT">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Simulation Statistics:"/>
+                <Label fx:id="animalCountLabel" text="Animals: 0"/>
+                <Label fx:id="grassCountLabel" text="Grass: 0"/>
+                <Label fx:id="emptySquaresLabel" text="Empty Squares: 0"/>
+                <Label fx:id="avgEnergyLabel" text="Avg Energy: 0.0"/>
+                <Label fx:id="avgLifeSpanLabel" text="Avg Life: 0.0"/>
+                <Label fx:id="avgChildrenLabel" text="Avg Children: 0.0"/>
+                <Label fx:id="popularGenotypeLabel" text="Popular Genotype: none"/>
+            </VBox>
+            <VBox fx:id="animalStatsBox" spacing="5" alignment="BOTTOM_LEFT">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Selected Animal Status:"/>
+                <Label fx:id="animalGenome" text="Genome:"/>
+                <Label fx:id="activeGenomeIndex" text="Genome index:"/>
+                <Label fx:id="animalEnergy" text="Energy:"/>
+                <Label fx:id="numPlantEaten" text="Number of plants eaten:"/>
+                <Label fx:id="numKids" text="Number of kids:"/>
+                <Label fx:id="numDescendants" text="Number of grandchildren:"/>
+                <Label fx:id="daysSurvied" text="Days survived:"/>
+                <Label fx:id="diedOn" text="Died on:"/>
+            </VBox>
+        </VBox>
+    </right>
+</BorderPane>
