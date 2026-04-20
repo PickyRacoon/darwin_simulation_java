@@ -2,15 +2,15 @@
 - Patrycja Markiewicz
 - Tomasz Firganek
 
-## Wariant
-- Uprawianie ziemi 
+## Cultivated Land – Simulation Variant
 
-## Interesting features
-- uruchamianie wielu symulacji jednocześnie w osobnych oknach
-- wizualizacja energii zwierzaków na żywo w trakcie symulacji
-- podglądanie statystyk danego zwierzęcia (jak na danym polu jest kilka zwierząt, to klikając ponownie w to pole wyświetlają sie statystyki kolejnego zwierzaka)
-- wyróżnienie wizualne (kolor czerwony) zwierzaka z najpopularniejszym genotypem oraz pozycji preferowanych przez rośliny
-- zapisywanie statystych symulacji do pliku CSV po każdym dniu
-- zapisywanie i wczytywanie konfiguracji symulacji do pliku oraz zapewnienie listy "presetów"
-- skalowanie rozmiaru mapy w zależności od rozmiaru 
+This project was developed as part of a Master’s degree course assignment. It implements a simulation of an ecosystem on cultivated land, where animals move, consume energy, reproduce, and interact with plant resources on a dynamically generated map.
 
+## Key Features
+- running multiple simulations simultaneously in separate windows
+- real-time visualization of animals’ energy levels during the simulation
+- displaying statistics of a selected animal (if multiple animals occupy the same field, clicking the field again cycles through the statistics of the next animal)
+- visual highlighting (in red) of the animal with the most common genotype and the positions preferred by plants
+- saving simulation statistics to a CSV file after each simulated day
+- saving and loading simulation configurations from a file and providing a list of predefined presets
+- scaling the map size depending on the configured map dimensions
